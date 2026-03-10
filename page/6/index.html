@@ -75,132 +75,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Linux/Linux_05_Vim编辑器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2023/01/14/Linux/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/" class="article-date">
-  <time class="dt-published" datetime="2023-01-14T07:55:26.000Z" itemprop="datePublished">2023-01-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/01/14/Linux/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/">Linux VIM文本编辑器</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="VIM文本编辑器"><a href="#VIM文本编辑器" class="headerlink" title="VIM文本编辑器"></a>VIM文本编辑器</h3><p><img src="/./img/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/vim.jpg" alt="vim"></p>
-<blockquote>
-<p>  &#x2F;var&#x2F;log&#x2F;boot.log</p>
-</blockquote>
-<h4 id="vim创建文件"><a href="#vim创建文件" class="headerlink" title="vim创建文件"></a>vim创建文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim filename.txt</span><br><span class="line">一般模式</span><br><span class="line">插入模式</span><br><span class="line">命令模式</span><br></pre></td></tr></table></figure>
-
-<h4 id="vim打开文件"><a href="#vim打开文件" class="headerlink" title="vim打开文件"></a>vim打开文件</h4><ul>
-<li><p><code>vim +3 hello.txt</code> :打开文件并定位到第三行</p>
-</li>
-<li><p><code>vim + hello.txt</code> :      定位到最后一行</p>
-</li>
-<li><p><code>vim +/string hello.txt</code>: 打开文件并定位到首次出现string的行</p>
-</li>
-<li><p><code>vim -d file1 file2</code>: 对比文件差异</p>
-</li>
-</ul>
-<h4 id="vim退出"><a href="#vim退出" class="headerlink" title="vim退出"></a>vim退出</h4><ul>
-<li><code>:q!</code> 退出不保存</li>
-<li><code>:w</code> 保存</li>
-<li><code>:wq</code> 保存并退出</li>
-</ul>
-<h4 id="Insert编辑模式"><a href="#Insert编辑模式" class="headerlink" title="Insert编辑模式"></a>Insert编辑模式</h4><p>  进入编辑模式：<strong>&lt;A,a&gt;  &lt;I,i&gt;  &lt;o,O&gt;</strong></p>
-<h4 id="Normal一般模式"><a href="#Normal一般模式" class="headerlink" title="Normal一般模式"></a>Normal一般模式</h4><p>  字符级：hjkl</p>
-<p>  单词级：w（词首）e（词尾）b（返回上一个词的词首）</p>
-<p>  行内：0（行首）^（行首）$（行尾）</p>
-<p>  行间：gg（首行） G（末行） 5G（第5行）</p>
-<p>  段头: (</p>
-<p>  段尾：)</p>
-<p>  翻屏：ctrl+f&#x2F;b</p>
-<p>  删除字符：x</p>
-<p>  删除单词：dw  5dw</p>
-<p>  删除行：dd 5dd</p>
-<p>  复制：yy 3yy</p>
-<p>  粘贴：p</p>
-<p>  剪切：dd</p>
-<p>  撤销：u (undo)</p>
-<p>  全选：ggVG</p>
-<p>  删除光标到光标所在行的行尾：d$</p>
-<p>  删除光标到光标所在行的行首：d0  d^</p>
-<p>  删除光标所在到第一行的所有数据：d1G</p>
-<p>  删除光标所在到最后一行的所有数据：dG</p>
-<h5 id="多行注释"><a href="#多行注释" class="headerlink" title="多行注释"></a>多行注释</h5><p>  1,一般模式，Ctrl+v进入列选择模式</p>
-<p>  2,jk上下移动选择需要注释的行</p>
-<p>  3,shift+i, 进入插入模式,插入&#x2F;&#x2F;或#号</p>
-<p>  4,按ESC,多行注释完成</p>
-<h5 id="删除多行注释"><a href="#删除多行注释" class="headerlink" title="删除多行注释"></a>删除多行注释</h5><p>  1,ESC末行模式，Ctrl+v进入列选择模式</p>
-<p>  2,jk上下移动选择需要注释的行,hl选择列</p>
-<p>  3,d删除所选列</p>
-<h4 id="Command-line命令模式"><a href="#Command-line命令模式" class="headerlink" title="Command-line命令模式"></a>Command-line命令模式</h4><h5 id="行号"><a href="#行号" class="headerlink" title="行号"></a>行号</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 显示行号</span></span><br><span class="line">:<span class="built_in">set</span> nu </span><br><span class="line">:<span class="built_in">set</span> number</span><br><span class="line"></span><br><span class="line"><span class="comment"># 取消行号</span></span><br><span class="line">:<span class="built_in">set</span> nonu</span><br><span class="line">:<span class="built_in">set</span> nonumber</span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="语法高亮"><a href="#语法高亮" class="headerlink" title="语法高亮"></a>语法高亮</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:syntax on	<span class="comment"># 开启</span></span><br><span class="line">:syntax off 	<span class="comment"># 关闭</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>  需要根据内容给文件分配恰当的文件扩展名</p>
-</blockquote>
-<h5 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h5><p>以当前光标为参照点</p>
-<ul>
-<li><p>向后查找，使用<code>/</code>，继续向后按<code>n</code>， 向前按<code>Shift+n</code></p>
-</li>
-<li><p>向前查找，使用<code>?</code>，继续向前按<code>n</code>， 向后按<code>Shift+n</code></p>
-</li>
-</ul>
-<h5 id="多行控制"><a href="#多行控制" class="headerlink" title="多行控制"></a>多行控制</h5><p>  :m,n&gt;(将第m行到第n行向右缩进一个制表符)</p>
-<p>  :20,26&lt; (将20-26行向左缩进一个制表符)</p>
-<p>  :ctrl+v,配合jk上下移动</p>
-<h5 id="命令模式下展示参数列表"><a href="#命令模式下展示参数列表" class="headerlink" title="命令模式下展示参数列表"></a>命令模式下展示参数列表</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="built_in">set</span> wildmode=longest:<span class="built_in">list</span></span><br></pre></td></tr></table></figure>
-
-<p>或者将其写入 vimrc文件</p>
-<h5 id="命令模式下查看VIM自带的主题列表"><a href="#命令模式下查看VIM自带的主题列表" class="headerlink" title="命令模式下查看VIM自带的主题列表"></a>命令模式下查看VIM自带的主题列表</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:colorscheme &lt;Tab&gt; <span class="comment">#可展示自带主题列表</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/./img/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/1709461100081.png" alt="1709461100081"></p>
-<h4 id="VIM配置文件"><a href="#VIM配置文件" class="headerlink" title="VIM配置文件"></a>VIM配置文件</h4><ol>
-<li><p>系统配置文件：<code>/etc/vim/vimrc</code>，这个配置文件如果被更改，会影响所有的用户。</p>
-</li>
-<li><p>用户配置文件：<code>~/.vimrc</code>，这个配置文件如果被更改，只会影响自己使用。</p>
-</li>
-</ol>
-<blockquote>
-<p>  <a target="_blank" rel="noopener" href="https://www.cnblogs.com/hawkboy/articles/2991371.html">https://www.cnblogs.com/hawkboy/articles/2991371.html</a></p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.studybigdata.com/2023/01/14/Linux/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/" data-id="cuid4Xn20Drikk_d9MwvTIl7X" data-title="Linux VIM文本编辑器" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VIM%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/" rel="tag">VIM文本编辑器</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-Linux/Linux_06_查看文本文件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2023/01/14/Linux/Linux_06_%E6%9F%A5%E7%9C%8B%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6/" class="article-date">
@@ -1141,6 +1015,56 @@
 
 
   
+    <article id="post-Linux/Linux_09_文件权限" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/01/14/Linux/Linux_09_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" class="article-date">
+  <time class="dt-published" datetime="2023-01-14T07:55:26.000Z" itemprop="datePublished">2023-01-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/01/14/Linux/Linux_09_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/">Linux文件权限</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="文件权限"><a href="#文件权限" class="headerlink" title="文件权限"></a>文件权限</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">drwxr-xr-x  1 root root    4096 Oct 14 19:35 home</span><br><span class="line">d: directory  - :文件</span><br><span class="line"></span><br><span class="line">rwx : 所有者权限(user, u) 111 -&gt; 7</span><br><span class="line">r-x : 所属组(group, g) 101 -&gt; 5</span><br><span class="line">r-x : 其他用户(other, o) 101 -&gt; 5</span><br><span class="line"></span><br><span class="line">r : read (4)</span><br><span class="line">w : write (2)</span><br><span class="line">x : 执行 (1)</span><br><span class="line"></span><br><span class="line">root : 所有者</span><br><span class="line">root : 所属组</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chmod :更改权限</span><br><span class="line">chmod 700 file</span><br><span class="line">chmod u+x file</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chown</span> zhangsan:zhangsan hello.sh</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.studybigdata.com/2023/01/14/Linux/Linux_09_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" data-id="cuid55SGxBHjTx7gJAg9a4Ghn" data-title="Linux文件权限" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" rel="tag">Linux文件权限</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
 
 
   <nav id="page-nav">
@@ -1198,10 +1122,6 @@
       <ul>
         
           <li>
-            <a href="/2026/03/09/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
             <a href="/2026/03/09/Kafka/">Kafka</a>
           </li>
         
@@ -1215,6 +1135,10 @@
         
           <li>
             <a href="/2026/03/08/Linux/Linux_SSH_Passwordless_login/">SSH无密登录配置</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/19/Python/Python/">Python</a>
           </li>
         
       </ul>

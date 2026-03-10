@@ -75,56 +75,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Linux/Linux_09_文件权限" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2023/01/14/Linux/Linux_09_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" class="article-date">
-  <time class="dt-published" datetime="2023-01-14T07:55:26.000Z" itemprop="datePublished">2023-01-14</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/01/14/Linux/Linux_09_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/">Linux文件权限</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="文件权限"><a href="#文件权限" class="headerlink" title="文件权限"></a>文件权限</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">drwxr-xr-x  1 root root    4096 Oct 14 19:35 home</span><br><span class="line">d: directory  - :文件</span><br><span class="line"></span><br><span class="line">rwx : 所有者权限(user, u) 111 -&gt; 7</span><br><span class="line">r-x : 所属组(group, g) 101 -&gt; 5</span><br><span class="line">r-x : 其他用户(other, o) 101 -&gt; 5</span><br><span class="line"></span><br><span class="line">r : read (4)</span><br><span class="line">w : write (2)</span><br><span class="line">x : 执行 (1)</span><br><span class="line"></span><br><span class="line">root : 所有者</span><br><span class="line">root : 所属组</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chmod :更改权限</span><br><span class="line">chmod 700 file</span><br><span class="line">chmod u+x file</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chown</span> zhangsan:zhangsan hello.sh</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.studybigdata.com/2023/01/14/Linux/Linux_09_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" data-id="cuid55SGxBHjTx7gJAg9a4Ghn" data-title="Linux文件权限" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" rel="tag">Linux文件权限</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-Spark/PySpark/Spark" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2023/01/14/Spark/PySpark/Spark/" class="article-date">
@@ -1358,6 +1308,48 @@
 
 
   
+    <article id="post-Kettle/Kettle_Clean_Code_RegularExpression" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/11/03/Kettle/Kettle_Clean_Code_RegularExpression/" class="article-date">
+  <time class="dt-published" datetime="2022-11-02T22:34:26.000Z" itemprop="datePublished">2022-11-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Kettle/">Kettle</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/11/03/Kettle/Kettle_Clean_Code_RegularExpression/">kettle - 数据清理之使用正则表达式清理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Kettle-数据清理之使用正则表达式清理"><a href="#Kettle-数据清理之使用正则表达式清理" class="headerlink" title="Kettle - 数据清理之使用正则表达式清理"></a>Kettle - 数据清理之使用正则表达式清理</h1><h2 id="实验数据"><a href="#实验数据" class="headerlink" title="实验数据"></a>实验数据</h2><h2 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h2><h2 id="转换设计"><a href="#转换设计" class="headerlink" title="转换设计"></a>转换设计</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.studybigdata.com/2022/11/03/Kettle/Kettle_Clean_Code_RegularExpression/" data-id="cuid43-rs4Cikz0Xi4Ri_98fb" data-title="kettle - 数据清理之使用正则表达式清理" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
 
 
   <nav id="page-nav">
@@ -1415,10 +1407,6 @@
       <ul>
         
           <li>
-            <a href="/2026/03/09/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
             <a href="/2026/03/09/Kafka/">Kafka</a>
           </li>
         
@@ -1432,6 +1420,10 @@
         
           <li>
             <a href="/2026/03/08/Linux/Linux_SSH_Passwordless_login/">SSH无密登录配置</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/19/Python/Python/">Python</a>
           </li>
         
       </ul>

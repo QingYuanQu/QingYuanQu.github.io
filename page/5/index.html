@@ -75,113 +75,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Hadoop/Java_Serializable" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2023/01/15/Hadoop/Java_Serializable/" class="article-date">
-  <time class="dt-published" datetime="2023-01-15T07:55:26.000Z" itemprop="datePublished">2023-01-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Hadoop/">Hadoop</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/01/15/Hadoop/Java_Serializable/">Hadoop 网络序列化与反序列化实训</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="marp-false"><a href="#marp-false" class="headerlink" title="marp: false"></a>marp: false</h2><h1 id="Java序列化与反序列化实训"><a href="#Java序列化与反序列化实训" class="headerlink" title="Java序列化与反序列化实训"></a>Java序列化与反序列化实训</h1><hr>
-<h2 id="序列化概述"><a href="#序列化概述" class="headerlink" title="序列化概述"></a>序列化概述</h2><p><strong>序列化</strong>（Serialization）是将<strong>对象的状态信息</strong>转换为可以存储或传输的形式的过程。</p>
-<p><strong>反序列化</strong>（Deserialization）则是将已序列化的对象状态信息恢复为对象的过程。</p>
-<p>在分布式系统中，序列化机制允许对象通过网络在不同的Java虚拟机之间传输。</p>
-<p>在Hadoop生态系统中，序列化尤为重要，因为MapReduce、YARN等组件需要在不同节点之间传输大量数据，高效的序列化机制能够显著提升性能。</p>
-<hr>
-<h2 id="Java序列化基础"><a href="#Java序列化基础" class="headerlink" title="Java序列化基础"></a>Java序列化基础</h2><p>要实现序列化，一个类必须实现<code>java.io.Serializable</code>接口。这个接口是一个标记接口，没有定义任何方法。一旦一个类实现了这个接口，Java虚拟机（JVM）就可以将这个类的对象序列化并通过网络传输。</p>
-<hr>
-<h2 id="实训目标"><a href="#实训目标" class="headerlink" title="实训目标"></a>实训目标</h2><ol>
-<li>掌握Java对象序列化机制</li>
-<li>学习使用Socket进行网络通信</li>
-<li>实现客户端与服务器之间的对象传输</li>
-<li>理解transient关键字的作用</li>
-</ol>
-<hr>
-<h2 id="示例：Student类"><a href="#示例：Student类" class="headerlink" title="示例：Student类"></a>示例：Student类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line">    <span class="comment">// 序列化版本ID，确保版本兼容性</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line">    <span class="keyword">private</span> String phoneNumber;</span><br><span class="line">    <span class="comment">// transient修饰的字段不会被序列化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> String emotion;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Student</span><span class="params">(String name, String sex, String address, String phoneNumber, String emotion)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">        <span class="built_in">this</span>.sex = sex;</span><br><span class="line">        <span class="built_in">this</span>.address = address;</span><br><span class="line">        <span class="built_in">this</span>.phoneNumber = phoneNumber;</span><br><span class="line">        <span class="built_in">this</span>.emotion = emotion;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Student&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;name=&#x27;&quot;</span> + name + <span class="string">&quot;&#x27;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;, sex=&#x27;&quot;</span> + sex + <span class="string">&quot;&#x27;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;, address=&#x27;&quot;</span> + address + <span class="string">&quot;&#x27;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;, phoneNumber=&#x27;&quot;</span> + phoneNumber + <span class="string">&quot;&#x27;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;, emotion=&#x27;&quot;</span> + emotion + <span class="string">&quot;&#x27;&quot;</span> + <span class="comment">// emotion将为null，因为它是transient的</span></span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">say</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;高兴死了，我来到了这个世界上~~~\n&quot;</span> + <span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayAgain</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;我又活过来了~~~\n&quot;</span> + <span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="transient关键字"><a href="#transient关键字" class="headerlink" title="transient关键字"></a>transient关键字</h2><p>Java中的transient关键字表示”短暂的”。被transient修饰的成员变量，在对象序列化过程中会被忽略。这意味着：</p>
-<ol>
-<li>transient变量不会被序列化到字节流中</li>
-<li>反序列化后，transient变量会被初始化为默认值（对象为null，基本类型为0或false）</li>
-<li>适用于存储临时数据或敏感信息（如密码）</li>
-</ol>
-<hr>
-<h2 id="服务器端代码"><a href="#服务器端代码" class="headerlink" title="服务器端代码"></a>服务器端代码</h2><p>服务器端负责接收客户端发送的序列化对象，并进行反序列化：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectInputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ObjectServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 创建服务器Socket，监听8888端口</span></span><br><span class="line">            <span class="type">ServerSocket</span> <span class="variable">serverSocket</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServerSocket</span>(<span class="number">80</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;服务器启动，等待客户端连接...&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 等待客户端连接</span></span><br><span class="line">            <span class="type">Socket</span> <span class="variable">socket</span> <span class="operator">=</span> serverSocket.accept();</span><br><span class="line">            System.out.println(<span class="string">&quot;客户端已连接，准备接收对象...&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 创建对象输入流，用于反序列化</span></span><br><span class="line">            <span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(socket.getInputStream());</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 读取并反序列化对象</span></span><br><span class="line">            <span class="type">Student</span> <span class="variable">student</span> <span class="operator">=</span> (Student) ois.readObject();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 调用对象方法，验证反序列化是否成功</span></span><br><span class="line">            student.sayAgain();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 关闭资源</span></span><br><span class="line">            ois.close();</span><br><span class="line">            socket.close();</span><br><span class="line">            serverSocket.close();</span><br><span class="line">            </span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException | ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="服务器端IP地址"><a href="#服务器端IP地址" class="headerlink" title="服务器端IP地址"></a>服务器端IP地址</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">无线局域网适配器 WLAN:</span><br><span class="line"></span><br><span class="line">   连接特定的 DNS 后缀 . . . . . . . :</span><br><span class="line">   IPv6 地址 . . . . . . . . . . . . : 240a:42b8:a00:161e:8f54:737a:808d:7a24</span><br><span class="line">   临时 IPv6 地址. . . . . . . . . . : 240a:42b8:a00:161e:1c5e:437a:119:1c0e</span><br><span class="line">   本地链接 IPv6 地址. . . . . . . . : fe80::b7e2:1e50:ac88:6f32%3</span><br><span class="line">   IPv4 地址 . . . . . . . . . . . . : 192.168.43.172</span><br><span class="line">   子网掩码  . . . . . . . . . . . . : 255.255.255.0</span><br><span class="line">   默认网关. . . . . . . . . . . . . : fe80::7c1c:47ff:fea1:ae35%3</span><br><span class="line">                                       192.168.43.1</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h2><p>客户端负责创建对象，序列化后通过Socket发送到服务器：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.ObjectOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ObjectClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 创建Socket，连接到服务器</span></span><br><span class="line">            <span class="type">Socket</span> <span class="variable">socket</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Socket</span>(<span class="string">&quot;192.168.43.172&quot;</span>, <span class="number">80</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;已连接到服务器，准备发送对象...&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 创建对象</span></span><br><span class="line">            <span class="type">Student</span> <span class="variable">zhangsan</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Student</span>(<span class="string">&quot;zhangsan&quot;</span>, <span class="string">&quot;male&quot;</span>, <span class="string">&quot;山东省济南市山东女子学院&quot;</span>, <span class="string">&quot;18888888888&quot;</span>, <span class="string">&quot;happy&quot;</span>);</span><br><span class="line">            zhangsan.say();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 创建对象输出流，用于序列化</span></span><br><span class="line">            <span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(socket.getOutputStream());</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 序列化并发送对象</span></span><br><span class="line">            oos.writeObject(zhangsan);</span><br><span class="line">            System.out.println(<span class="string">&quot;对象已发送到服务器&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 关闭资源</span></span><br><span class="line">            oos.close();</span><br><span class="line">            socket.close();</span><br><span class="line">            </span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="运行步骤"><a href="#运行步骤" class="headerlink" title="运行步骤"></a>运行步骤</h2><ol>
-<li><p>首先编译所有Java文件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(base) PS C:\Users\qingy\Desktop&gt;javac -encoding UTF-8 .\Student.java</span><br><span class="line">(base) PS C:\Users\qingy\Desktop&gt; javac -encoding UTF-8 .\ObjectClient.java</span><br><span class="line">(base) PS C:\Users\qingy\Desktop&gt; javac -encoding UTF-8 .\ObjectServer.java</span><br><span class="line"></span><br><span class="line">(base) PS C:\Users\qingy\Desktop&gt; java ObjectServer</span><br><span class="line">服务器启动，等待客户端连接...</span><br><span class="line">客户端已连接，准备接收对象...</span><br><span class="line">我又活过来了~~~</span><br><span class="line">Student&#123;name=<span class="string">&#x27;zhangsan&#x27;</span>, sex=<span class="string">&#x27;male&#x27;</span>, address=<span class="string">&#x27;山东省济南市山东女子学院&#x27;</span>, phoneNumber=<span class="string">&#x27;18888888888&#x27;</span>, emotion=<span class="string">&#x27;null&#x27;</span>&#125;</span><br><span class="line">(base) PS C:\Users\qingy\Desktop&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启动服务器：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(base) PS C:\Users\qingy\Desktop&gt; java ObjectServer</span><br><span class="line">服务器启动，等待客户端连接...</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启动客户端：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(base) PS C:\Users\qingy\Desktop&gt; java ObjectClient</span><br><span class="line">已连接到服务器，准备发送对象...</span><br><span class="line">高兴死了，我来到了这个世界上~~~</span><br><span class="line">Student&#123;name=<span class="string">&#x27;zhangsan&#x27;</span>, sex=<span class="string">&#x27;male&#x27;</span>, address=<span class="string">&#x27;山东省济南市山东女子学院&#x27;</span>, phoneNumber=<span class="string">&#x27;18888888888&#x27;</span>, emotion=<span class="string">&#x27;happy&#x27;</span>&#125;</span><br><span class="line">对象已发送到服务器</span><br></pre></td></tr></table></figure></li>
-<li><p>查看服务器端输出：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">客户端已连接，准备接收对象...</span><br><span class="line">我又活过来了~~~</span><br><span class="line">Student&#123;name=<span class="string">&#x27;zhangsan&#x27;</span>, sex=<span class="string">&#x27;male&#x27;</span>, address=<span class="string">&#x27;山东省济南市山东女子学院&#x27;</span>, phoneNumber=<span class="string">&#x27;18888888888&#x27;</span>, emotion=<span class="string">&#x27;null&#x27;</span>&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="预期输出"><a href="#预期输出" class="headerlink" title="预期输出"></a>预期输出</h2><h3 id="客户端输出："><a href="#客户端输出：" class="headerlink" title="客户端输出："></a>客户端输出：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">已连接到服务器，准备发送对象...</span><br><span class="line">高兴死了，我来到了这个世界上~~~</span><br><span class="line">Student&#123;name=&#x27;zhangsan&#x27;, sex=&#x27;male&#x27;, address=&#x27;山东省济南市山东女子学院&#x27;, phoneNumber=&#x27;18888888888&#x27;, emotion=&#x27;happy&#x27;&#125;</span><br><span class="line">对象已发送到服务器</span><br></pre></td></tr></table></figure>
-
-<h3 id="服务器输出："><a href="#服务器输出：" class="headerlink" title="服务器输出："></a>服务器输出：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">服务器启动，等待客户端连接...</span><br><span class="line">客户端已连接，准备接收对象...</span><br><span class="line">我又活过来了~~~</span><br><span class="line">Student&#123;name=&#x27;zhangsan&#x27;, sex=&#x27;male&#x27;, address=&#x27;山东省济南市山东女子学院&#x27;, phoneNumber=&#x27;18888888888&#x27;, emotion=&#x27;null&#x27;&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
-<li><p><strong>serialVersionUID</strong>：为序列化类添加<code>serialVersionUID</code>是一个好习惯，可以确保类的版本兼容性</p>
-</li>
-<li><p><strong>transient关键字</strong>：注意观察服务器端接收到的对象中，emotion字段值为null，这是因为它被transient修饰</p>
-</li>
-<li><p><strong>资源关闭</strong>：记得关闭所有的输入输出流和Socket连接，最好使用try-with-resources语法</p>
-</li>
-<li><p><strong>异常处理</strong>：网络编程中需要处理IOException和ClassNotFoundException等异常</p>
-</li>
-<li><p><strong>端口占用</strong>：如果80端口被占用，可以修改为其他端口号</p>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.studybigdata.com/2023/01/15/Hadoop/Java_Serializable/" data-id="cuidBq8wofkXI9Hyy9jIAec8_" data-title="Hadoop 网络序列化与反序列化实训" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Serializable/" rel="tag">Serializable</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Socket/" rel="tag">Socket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag">网络序列化</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-Spark/Spark_Env_Standalone" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2023/01/15/Spark/Spark_Env_Standalone/" class="article-date">
@@ -1214,6 +1107,132 @@
 
 
   
+    <article id="post-Linux/Linux_05_Vim编辑器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/01/14/Linux/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/" class="article-date">
+  <time class="dt-published" datetime="2023-01-14T07:55:26.000Z" itemprop="datePublished">2023-01-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/01/14/Linux/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/">Linux VIM文本编辑器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="VIM文本编辑器"><a href="#VIM文本编辑器" class="headerlink" title="VIM文本编辑器"></a>VIM文本编辑器</h3><p><img src="/./img/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/vim.jpg" alt="vim"></p>
+<blockquote>
+<p>  &#x2F;var&#x2F;log&#x2F;boot.log</p>
+</blockquote>
+<h4 id="vim创建文件"><a href="#vim创建文件" class="headerlink" title="vim创建文件"></a>vim创建文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim filename.txt</span><br><span class="line">一般模式</span><br><span class="line">插入模式</span><br><span class="line">命令模式</span><br></pre></td></tr></table></figure>
+
+<h4 id="vim打开文件"><a href="#vim打开文件" class="headerlink" title="vim打开文件"></a>vim打开文件</h4><ul>
+<li><p><code>vim +3 hello.txt</code> :打开文件并定位到第三行</p>
+</li>
+<li><p><code>vim + hello.txt</code> :      定位到最后一行</p>
+</li>
+<li><p><code>vim +/string hello.txt</code>: 打开文件并定位到首次出现string的行</p>
+</li>
+<li><p><code>vim -d file1 file2</code>: 对比文件差异</p>
+</li>
+</ul>
+<h4 id="vim退出"><a href="#vim退出" class="headerlink" title="vim退出"></a>vim退出</h4><ul>
+<li><code>:q!</code> 退出不保存</li>
+<li><code>:w</code> 保存</li>
+<li><code>:wq</code> 保存并退出</li>
+</ul>
+<h4 id="Insert编辑模式"><a href="#Insert编辑模式" class="headerlink" title="Insert编辑模式"></a>Insert编辑模式</h4><p>  进入编辑模式：<strong>&lt;A,a&gt;  &lt;I,i&gt;  &lt;o,O&gt;</strong></p>
+<h4 id="Normal一般模式"><a href="#Normal一般模式" class="headerlink" title="Normal一般模式"></a>Normal一般模式</h4><p>  字符级：hjkl</p>
+<p>  单词级：w（词首）e（词尾）b（返回上一个词的词首）</p>
+<p>  行内：0（行首）^（行首）$（行尾）</p>
+<p>  行间：gg（首行） G（末行） 5G（第5行）</p>
+<p>  段头: (</p>
+<p>  段尾：)</p>
+<p>  翻屏：ctrl+f&#x2F;b</p>
+<p>  删除字符：x</p>
+<p>  删除单词：dw  5dw</p>
+<p>  删除行：dd 5dd</p>
+<p>  复制：yy 3yy</p>
+<p>  粘贴：p</p>
+<p>  剪切：dd</p>
+<p>  撤销：u (undo)</p>
+<p>  全选：ggVG</p>
+<p>  删除光标到光标所在行的行尾：d$</p>
+<p>  删除光标到光标所在行的行首：d0  d^</p>
+<p>  删除光标所在到第一行的所有数据：d1G</p>
+<p>  删除光标所在到最后一行的所有数据：dG</p>
+<h5 id="多行注释"><a href="#多行注释" class="headerlink" title="多行注释"></a>多行注释</h5><p>  1,一般模式，Ctrl+v进入列选择模式</p>
+<p>  2,jk上下移动选择需要注释的行</p>
+<p>  3,shift+i, 进入插入模式,插入&#x2F;&#x2F;或#号</p>
+<p>  4,按ESC,多行注释完成</p>
+<h5 id="删除多行注释"><a href="#删除多行注释" class="headerlink" title="删除多行注释"></a>删除多行注释</h5><p>  1,ESC末行模式，Ctrl+v进入列选择模式</p>
+<p>  2,jk上下移动选择需要注释的行,hl选择列</p>
+<p>  3,d删除所选列</p>
+<h4 id="Command-line命令模式"><a href="#Command-line命令模式" class="headerlink" title="Command-line命令模式"></a>Command-line命令模式</h4><h5 id="行号"><a href="#行号" class="headerlink" title="行号"></a>行号</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 显示行号</span></span><br><span class="line">:<span class="built_in">set</span> nu </span><br><span class="line">:<span class="built_in">set</span> number</span><br><span class="line"></span><br><span class="line"><span class="comment"># 取消行号</span></span><br><span class="line">:<span class="built_in">set</span> nonu</span><br><span class="line">:<span class="built_in">set</span> nonumber</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="语法高亮"><a href="#语法高亮" class="headerlink" title="语法高亮"></a>语法高亮</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:syntax on	<span class="comment"># 开启</span></span><br><span class="line">:syntax off 	<span class="comment"># 关闭</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>  需要根据内容给文件分配恰当的文件扩展名</p>
+</blockquote>
+<h5 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h5><p>以当前光标为参照点</p>
+<ul>
+<li><p>向后查找，使用<code>/</code>，继续向后按<code>n</code>， 向前按<code>Shift+n</code></p>
+</li>
+<li><p>向前查找，使用<code>?</code>，继续向前按<code>n</code>， 向后按<code>Shift+n</code></p>
+</li>
+</ul>
+<h5 id="多行控制"><a href="#多行控制" class="headerlink" title="多行控制"></a>多行控制</h5><p>  :m,n&gt;(将第m行到第n行向右缩进一个制表符)</p>
+<p>  :20,26&lt; (将20-26行向左缩进一个制表符)</p>
+<p>  :ctrl+v,配合jk上下移动</p>
+<h5 id="命令模式下展示参数列表"><a href="#命令模式下展示参数列表" class="headerlink" title="命令模式下展示参数列表"></a>命令模式下展示参数列表</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="built_in">set</span> wildmode=longest:<span class="built_in">list</span></span><br></pre></td></tr></table></figure>
+
+<p>或者将其写入 vimrc文件</p>
+<h5 id="命令模式下查看VIM自带的主题列表"><a href="#命令模式下查看VIM自带的主题列表" class="headerlink" title="命令模式下查看VIM自带的主题列表"></a>命令模式下查看VIM自带的主题列表</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:colorscheme &lt;Tab&gt; <span class="comment">#可展示自带主题列表</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/./img/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/1709461100081.png" alt="1709461100081"></p>
+<h4 id="VIM配置文件"><a href="#VIM配置文件" class="headerlink" title="VIM配置文件"></a>VIM配置文件</h4><ol>
+<li><p>系统配置文件：<code>/etc/vim/vimrc</code>，这个配置文件如果被更改，会影响所有的用户。</p>
+</li>
+<li><p>用户配置文件：<code>~/.vimrc</code>，这个配置文件如果被更改，只会影响自己使用。</p>
+</li>
+</ol>
+<blockquote>
+<p>  <a target="_blank" rel="noopener" href="https://www.cnblogs.com/hawkboy/articles/2991371.html">https://www.cnblogs.com/hawkboy/articles/2991371.html</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.studybigdata.com/2023/01/14/Linux/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/" data-id="cuid4Xn20Drikk_d9MwvTIl7X" data-title="Linux VIM文本编辑器" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VIM%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8/" rel="tag">VIM文本编辑器</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
 
 
   <nav id="page-nav">
@@ -1271,10 +1290,6 @@
       <ul>
         
           <li>
-            <a href="/2026/03/09/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
             <a href="/2026/03/09/Kafka/">Kafka</a>
           </li>
         
@@ -1288,6 +1303,10 @@
         
           <li>
             <a href="/2026/03/08/Linux/Linux_SSH_Passwordless_login/">SSH无密登录配置</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/19/Python/Python/">Python</a>
           </li>
         
       </ul>
