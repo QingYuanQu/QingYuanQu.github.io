@@ -1,0 +1,256 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Linux基础命令 | 学习大数据</title><meta name="author" content="QuZheng"><meta name="copyright" content="QuZheng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Linux基础命令目录符号123.  : 当前目录.. : 父级目录~  : 用户目录  ls12345list : 列举当前目录或指定目录内的文件ls -l 	# 文件详细信息ls -a 	# 可以查看到以.开头的隐藏文件ls &#x2F;usr # 查看指定目录内的文件 ll      # ls -l的简写  cd1change directory : 变更目录  pwd1print name of c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux基础命令">
+<meta property="og:url" content="https://www.studybigdata.com/Linux/Linux_04_%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="学习大数据">
+<meta property="og:description" content="Linux基础命令目录符号123.  : 当前目录.. : 父级目录~  : 用户目录  ls12345list : 列举当前目录或指定目录内的文件ls -l 	# 文件详细信息ls -a 	# 可以查看到以.开头的隐藏文件ls &#x2F;usr # 查看指定目录内的文件 ll      # ls -l的简写  cd1change directory : 变更目录  pwd1print name of c">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.studybigdata.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2023-01-14T07:55:26.000Z">
+<meta property="article:modified_time" content="2026-03-08T13:16:46.217Z">
+<meta property="article:author" content="QuZheng">
+<meta property="article:tag" content="Linux基础命令">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.studybigdata.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Linux基础命令",
+  "url": "https://www.studybigdata.com/Linux/Linux_04_%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/",
+  "image": "https://www.studybigdata.com/img/butterfly-icon.png",
+  "datePublished": "2023-01-14T07:55:26.000Z",
+  "dateModified": "2026-03-08T13:16:46.217Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "QuZheng",
+      "url": "https://www.studybigdata.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.studybigdata.com/Linux/Linux_04_%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux基础命令',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">学习大数据</span></a><a class="nav-page-title" href="/"><span class="site-name">Linux基础命令</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Linux基础命令</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-01-14T07:55:26.000Z" title="Created 2023-01-14 15:55:26">2023-01-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-08T13:16:46.217Z" title="Updated 2026-03-08 21:16:46">2026-03-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Linux/">Linux</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h3 id="Linux基础命令"><a href="#Linux基础命令" class="headerlink" title="Linux基础命令"></a>Linux基础命令</h3><h4 id="目录符号"><a href="#目录符号" class="headerlink" title="目录符号"></a>目录符号</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.  : 当前目录</span><br><span class="line">.. : 父级目录</span><br><span class="line">~  : 用户目录</span><br></pre></td></tr></table></figure>
+
+<h4 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">list : 列举当前目录或指定目录内的文件</span><br><span class="line"><span class="built_in">ls</span> -l 	<span class="comment"># 文件详细信息</span></span><br><span class="line"><span class="built_in">ls</span> -a 	<span class="comment"># 可以查看到以.开头的隐藏文件</span></span><br><span class="line"><span class="built_in">ls</span> /usr <span class="comment"># 查看指定目录内的文件 </span></span><br><span class="line">ll      <span class="comment"># ls -l的简写</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="cd"><a href="#cd" class="headerlink" title="cd"></a>cd</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">change directory : 变更目录</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwd"><a href="#pwd" class="headerlink" title="pwd"></a>pwd</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print name of current/working directory : 打印工作目录</span><br></pre></td></tr></table></figure>
+
+<h4 id="mkdir"><a href="#mkdir" class="headerlink" title="mkdir"></a>mkdir</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make directory：创建文件夹</span><br></pre></td></tr></table></figure>
+
+<h4 id="rmdir"><a href="#rmdir" class="headerlink" title="rmdir"></a>rmdir</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">remove directory: 删除文件夹</span><br></pre></td></tr></table></figure>
+
+<h4 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">copy : 复制</span><br><span class="line"></span><br><span class="line">cp a.txt b.txt</span><br><span class="line">cp a.txt dir1/</span><br><span class="line">cp -r dir1 dir2/</span><br></pre></td></tr></table></figure>
+
+<h4 id="mv"><a href="#mv" class="headerlink" title="mv"></a>mv</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">move : 移动文件</span><br></pre></td></tr></table></figure>
+
+<h4 id="touch"><a href="#touch" class="headerlink" title="touch"></a>touch</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch filename # 创建文件</span><br></pre></td></tr></table></figure>
+
+<h4 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; # 标准输出</span><br></pre></td></tr></table></figure>
+
+<h4 id="输出重定向"><a href="#输出重定向" class="headerlink" title="输出重定向"></a>输出重定向</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; : 没有则创建，有则覆盖</span><br><span class="line">&gt;&gt; : 没有则创建，有则追加</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;hello world &#x27;</span> &gt; filename.txt (覆盖)</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;hello world &#x27;</span> &gt;&gt; filename.txt （追加）</span><br></pre></td></tr></table></figure>
+
+<h4 id="小练习"><a href="#小练习" class="headerlink" title="小练习"></a>小练习</h4><h5 id="实验目标"><a href="#实验目标" class="headerlink" title="实验目标"></a>实验目标</h5><p>通过操作文件和目录，了解Linux文件系统的基本结构和命令行的使用。</p>
+<h5 id="实验步骤"><a href="#实验步骤" class="headerlink" title="实验步骤"></a>实验步骤</h5><ol>
+<li><p><strong>打开终端</strong>：首先，打开您的Linux终端。</p>
+</li>
+<li><p><strong>查看用户目录内容</strong>：使用<code>ls</code>命令查看用户目录（通常是<code>~</code>）下的文件和目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>进入用户目录</strong>：使用<code>cd</code>命令进入用户目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>确认当前目录</strong>：使用<code>pwd</code>命令查看当前工作目录的路径，它应该显示您的用户目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>创建新目录并确认是否创建成功</strong>：在用户目录下使用<code>mkdir</code>命令创建一个新目录，例如<code>my_new_dir</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>创建新文件</strong>：在新目录中，使用<code>touch</code>命令创建一个新文件，例如<code>myfile.txt</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查看新文件</strong>：使用<code>ls</code>命令确认新文件已经创建。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>复制文件</strong>：使用<code>cp</code>命令将<code>myfile.txt</code>复制到当前目录（<code>.</code> 表示当前目录）,重命名为<code>myfile.txt.bak</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查看复制的文件</strong>：使用<code>ls</code>命令确认文件已经被复制到当前目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>移动文件</strong>：使用<code>mv</code>命令将<code>myfile.txt</code>移动到父级目录（<code>..</code> 表示父级目录）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">    </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查看移动后的文件</strong>：使用<code>ls</code>命令确认<code>myfile.txt</code>已经移动到父级目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">    </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>输出文本</strong>：使用<code>echo</code>命令在终端输出一条文本消息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">    </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>清理</strong>：为了保持文件系统的整洁，您可以选择删除在实验中创建的目录和文件。使用<code>rm</code>和<code>rmdir</code>命令删除文件和目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">    </span><br></pre></td></tr></table></figure></li>
+</ol>
+<h5 id="实验结束"><a href="#实验结束" class="headerlink" title="实验结束"></a>实验结束</h5><p>通过这个实验，您应该已经对Linux文件系统中的目录和文件操作有了更深入的理解，包括如何查看目录内容、更改工作目录、创建和删除文件及目录、复制和移动文件，以及如何在终端输出文本。</p>
+<blockquote>
+<p>  LSN地址</p>
+<p>  <a target="_blank" rel="noopener" href="http://121.250.170.70:9022/courses/126/assignments/1238">http://121.250.170.70:9022/courses/126/assignments/1238</a></p>
+</blockquote>
+<h5 id="问答"><a href="#问答" class="headerlink" title="问答"></a>问答</h5><ol>
+<li>提示符<code>$</code>与<code>#</code>的区别？</li>
+<li>如何列出当前目录下面的所有文件？</li>
+<li>如何<code>以详细信息的形式</code>列出当前目录下面的内容？</li>
+<li><code>.</code>和<code>..</code>分别代表什么？</li>
+<li><code>相对路径</code>和<code>绝对路径</code>的区别？</li>
+<li>如何从当前目录返回用户<code>主目录</code>（家目录）？</li>
+<li>如何删除目录？</li>
+<li>分别说明<code>cp</code>和<code>mv</code>的用法？</li>
+</ol>
+<h5 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h5><ol>
+<li>在桌面上使用-p或者–parents在用户目录上同时创建多级目录，例如xx&#x2F;yy&#x2F;zz。</li>
+<li>查看创建的目录，确认创建成功。</li>
+<li>依次删除zz、yy、xx目录。</li>
+<li>确认删除成功。</li>
+<li>重新创建xx&#x2F;yy&#x2F;zz，<strong>同时</strong>删除这几级目录。</li>
+<li>在用户主目录下创建名为dir1的目录</li>
+<li>用touch命令在主目录下创建名为myfile的文件</li>
+<li>用cp命令复制主目录下的myfile文件到dir1目录下</li>
+<li>将dir1目录下的myfile文件改名为myfile.old</li>
+<li>将主目录下的文件myfile移动到dir1目录下</li>
+<li>在主目录中创建dir2，将dir1<code>目录中的文件</code>复制到主目录下的dir2目录中，之后查看dir2的内容</li>
+<li>在主目录下创建dir3目录，将<code>dir1及其目录中的所有内容</code>递归复制到dir3目录中，之后查看dir3的内容</li>
+<li>在用户主目录下创建名为dir4的目录，在dir4目录下创建文件file1, file2, file3, file12，afile，bfile，abfile。</li>
+<li>列出dir4目录中文件名以file1开头的文件</li>
+<li>删除dir4目录中文件名以bfile结尾的文件</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com">QuZheng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com/Linux/Linux_04_%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">https://www.studybigdata.com/Linux/Linux_04_%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/">Linux基础命令</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/Linux/Linux_05_Vim%E7%BC%96%E8%BE%91%E5%99%A8/" title="Linux VIM文本编辑器"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Linux VIM文本编辑器</div></div><div class="info-2"><div class="info-item-1">VIM文本编辑器    &#x2F;var&#x2F;log&#x2F;boot.log  vim创建文件1234vim filename.txt一般模式插入模式命令模式  vim打开文件 vim +3 hello.txt :打开文件并定位到第三行  vim + hello.txt :      定位到最后一行  vim +/string hello.txt: 打开文件并定位到首次出现string的行  vim -d file1 file2: 对比文件差异   vim退出 :q! 退出不保存 :w 保存 :wq 保存并退出  Insert编辑模式  进入编辑模式：&lt;A,a&gt;  &lt;I,i&gt;  &lt;o,O&gt; Normal一般模式  字符级：hjkl   单词级：w（词首）e（词尾）b（返回上一个词的词首）   行内：0（行首）^（行首）$（行尾）   行间：gg（首行） G（末行） 5G（第5行）   段头: (   段尾：)   翻屏：ctrl+f&#x2F;b   删除字符：x   删除单词：dw  5dw   删除行：dd 5dd   复制：y...</div></div></div></a><a class="pagination-related" href="/Linux/Linux_02_%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6_%E5%85%B3%E6%9C%BA%E9%87%8D%E5%90%AF%E7%AD%89/" title="Linux系统控制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Linux系统控制</div></div><div class="info-2"><div class="info-item-1">系统控制系统注销终止用户与系统的交互进程， end session。 123logoutexitCtrl + d  shutdown关机1234567891011121314151617# shutdown (系统1分钟关机，并传送一些消息给正在使用的user) [root@localhost ~]# shutdownShutdown scheduled for Sun 2024-03-03 19:50:08 CST, use &#x27;shutdown -c&#x27; to cancel.[root@localhost ~]# Broadcast message from root@localhost.localdomain (Sun 2024-03-03 19:49:08 CST):The system is going down for power-off at Sun 2024-03-03 19:50:08 CST!# 取消关机shutdown -cBroadcast message from root@localhost.localdomain (Sun 2024-...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">QuZheng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">118</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">84</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">26</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="toc-number">1.</span> <span class="toc-text">Linux基础命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E7%AC%A6%E5%8F%B7"><span class="toc-number">1.1.</span> <span class="toc-text">目录符号</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ls"><span class="toc-number">1.2.</span> <span class="toc-text">ls</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cd"><span class="toc-number">1.3.</span> <span class="toc-text">cd</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwd"><span class="toc-number">1.4.</span> <span class="toc-text">pwd</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mkdir"><span class="toc-number">1.5.</span> <span class="toc-text">mkdir</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rmdir"><span class="toc-number">1.6.</span> <span class="toc-text">rmdir</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#cp"><span class="toc-number">1.7.</span> <span class="toc-text">cp</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mv"><span class="toc-number">1.8.</span> <span class="toc-text">mv</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#touch"><span class="toc-number">1.9.</span> <span class="toc-text">touch</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#echo"><span class="toc-number">1.10.</span> <span class="toc-text">echo</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91"><span class="toc-number">1.11.</span> <span class="toc-text">输出重定向</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E7%BB%83%E4%B9%A0"><span class="toc-number">1.12.</span> <span class="toc-text">小练习</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%9B%AE%E6%A0%87"><span class="toc-number">1.12.1.</span> <span class="toc-text">实验目标</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.12.2.</span> <span class="toc-text">实验步骤</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9D%9F"><span class="toc-number">1.12.3.</span> <span class="toc-text">实验结束</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%97%AE%E7%AD%94"><span class="toc-number">1.12.4.</span> <span class="toc-text">问答</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0"><span class="toc-number">1.12.5.</span> <span class="toc-text">练习</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Kafka/" title="Kafka">Kafka</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-02-environment/" title="第2章 数仓基础环境搭建">第2章 数仓基础环境搭建</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-01-introduction/" title="第1章 教育大数据分析项目介绍">第1章 教育大数据分析项目介绍</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Linux/Linux_SSH_Passwordless_login/" title="SSH无密登录配置">SSH无密登录配置</a><time datetime="2026-03-08T03:42:26.000Z" title="Created 2026-03-08 11:42:26">2026-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Python/Python/" title="Python">Python</a><time datetime="2023-11-19T13:58:00.000Z" title="Created 2023-11-19 21:58:00">2023-11-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By QuZheng</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HBase | 学习大数据</title><meta name="author" content="QuZheng"><meta name="copyright" content="QuZheng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="HBase  环境部署 官方文档 https:&#x2F;&#x2F;hbase.apache.org&#x2F;1.4&#x2F;book.html 下载地址 https:&#x2F;&#x2F;archive.apache.org&#x2F;dist&#x2F;hbase&#x2F;1.4.13&#x2F; 安装目录 &#x2F;opt&#x2F;bigdata&#x2F;hbase&#x2F; 配置文件 https:&#x2F;&#x2F;hbase.apache.org&#x2F;1.4&#x2F;book.html#_configuration_files 部署规">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase">
+<meta property="og:url" content="https://www.studybigdata.com/HBase/HBase/index.html">
+<meta property="og:site_name" content="学习大数据">
+<meta property="og:description" content="HBase  环境部署 官方文档 https:&#x2F;&#x2F;hbase.apache.org&#x2F;1.4&#x2F;book.html 下载地址 https:&#x2F;&#x2F;archive.apache.org&#x2F;dist&#x2F;hbase&#x2F;1.4.13&#x2F; 安装目录 &#x2F;opt&#x2F;bigdata&#x2F;hbase&#x2F; 配置文件 https:&#x2F;&#x2F;hbase.apache.org&#x2F;1.4&#x2F;book.html#_configuration_files 部署规">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.studybigdata.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2022-03-23T07:55:26.000Z">
+<meta property="article:modified_time" content="2022-11-07T08:55:36.918Z">
+<meta property="article:author" content="QuZheng">
+<meta property="article:tag" content="HBase">
+<meta property="article:tag" content="HBase伪分布式">
+<meta property="article:tag" content="HBase完全分布式">
+<meta property="article:tag" content="HBase环境搭建">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.studybigdata.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "HBase",
+  "url": "https://www.studybigdata.com/HBase/HBase/",
+  "image": "https://www.studybigdata.com/img/butterfly-icon.png",
+  "datePublished": "2022-03-23T07:55:26.000Z",
+  "dateModified": "2022-11-07T08:55:36.918Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "QuZheng",
+      "url": "https://www.studybigdata.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.studybigdata.com/HBase/HBase/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HBase',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">学习大数据</span></a><a class="nav-page-title" href="/"><span class="site-name">HBase</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">HBase</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-03-23T07:55:26.000Z" title="Created 2022-03-23 15:55:26">2022-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2022-11-07T08:55:36.918Z" title="Updated 2022-11-07 16:55:36">2022-11-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/HBase/">HBase</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 style="color:red; text-align:center">HBase</h1>
+
+<h1 id="环境部署"><a href="#环境部署" class="headerlink" title="环境部署"></a>环境部署</h1><blockquote>
+<p><strong>官方文档</strong></p>
+<p><a target="_blank" rel="noopener" href="https://hbase.apache.org/1.4/book.html">https://hbase.apache.org/1.4/book.html</a></p>
+<p><strong>下载地址</strong></p>
+<p><a target="_blank" rel="noopener" href="https://archive.apache.org/dist/hbase/1.4.13/">https://archive.apache.org/dist/hbase/1.4.13/</a></p>
+<p><strong>安装目录</strong></p>
+<p><code>/opt/bigdata/hbase/</code></p>
+<p><strong>配置文件</strong></p>
+<p><a target="_blank" rel="noopener" href="https://hbase.apache.org/1.4/book.html#_configuration_files">https://hbase.apache.org/1.4/book.html#_configuration_files</a></p>
+<p><strong>部署规划</strong></p>
+<p><code>node0</code>：Standalone</p>
+<p><code>node0</code>：Pseudo-Distributed；</p>
+<p><code>node1</code> <code>node2</code> <code>node3</code>  配置为<code>hbase</code>集群。</p>
+</blockquote>
+<h2 id="Standalone"><a href="#Standalone" class="headerlink" title="Standalone"></a>Standalone</h2><blockquote>
+<p><strong>Standalone</strong></p>
+<p><a target="_blank" rel="noopener" href="https://hbase.apache.org/1.4/book.html#quickstart">https://hbase.apache.org/1.4/book.html#quickstart</a></p>
+</blockquote>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><h4 id="上传"><a href="#上传" class="headerlink" title="上传"></a>上传</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node0 bigdata]$ cd /opt/bigdata/</span><br><span class="line">[zhangsan@node0 bigdata]$ mkdir hbase</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>FTP</code>工具上传压缩包<code>hbase-1.4.13-bin.tar.gz   </code>到<code>/opt/bigdata/hbase</code> 目录或者直接<code>wget</code>在线下载。</p>
+<h4 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node0 hbase]$ tar -zxf hbase-1.4.13-bin.tar.gz </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">做一个软连接（可选）</span></span><br><span class="line">[zhangsan@node0 hbase]$ ln -s hbase-1.4.13 default</span><br><span class="line">[zhangsan@node0 hbase]$ ll</span><br><span class="line">lrwxrwxrwx.  1 zhangsan zhangsan        12 Mar  3 18:40 default -&gt; hbase-1.4.13</span><br><span class="line">drwxrwxr-x.  7 zhangsan zhangsan       160 Mar  3 18:40 hbase-1.4.13</span><br><span class="line">-rw-rw-r--.  1 zhangsan zhangsan 118343766 Mar  3 18:39 hbase-1.4.13-bin.tar.gz</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><h5 id="hbase-env-sh"><a href="#hbase-env-sh" class="headerlink" title="hbase-env.sh"></a><code>hbase-env.sh</code></h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/java/default</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用HBase自带的ZooKeeper</span></span><br><span class="line">export HBASE_MANAGES_ZK=true</span><br></pre></td></tr></table></figure>
+
+<h5 id="hbase-site-xml"><a href="#hbase-site-xml" class="headerlink" title="hbase-site.xml"></a><code>hbase-site.xml</code></h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:///opt/bigdata/hbase/default/data<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.property.dataDir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/opt/bigdata/hbase/default/zookeeper<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="bashrc"><a href="#bashrc" class="headerlink" title="~/.bashrc"></a><code>~/.bashrc</code></h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_HOME=/opt/bigdata/hadoop/default</span><br><span class="line">export HBASE_HOME=/opt/bigdata/hbase/default</span><br><span class="line">export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+
+<p>记得<code>source</code>一下，让环境变量生效。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node0 ~]$ source ~/.bashrc </span><br></pre></td></tr></table></figure>
+
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><p>首先需要启动<code>Hadoop</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node0 ~]$ start-hbase.sh </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在Standalone模式下，只有一个HMaster进程，里面包括了HMaster,HRegionServer,Zookeeper</span></span><br><span class="line">(base) [zhangsan@node0 default]$ jps</span><br><span class="line">58278 Jps</span><br><span class="line">57002 HMaster</span><br></pre></td></tr></table></figure>
+
+<h4 id="HelloWorld"><a href="#HelloWorld" class="headerlink" title="HelloWorld"></a>HelloWorld</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan<span class="variable">@node0</span> <span class="keyword">default</span>]$ hbase shell</span><br><span class="line"><span class="comment">-- 创建表&#x27;student&#x27; 和 一个列簇 &#x27;info&#x27; </span></span><br><span class="line">hbase(main):<span class="number">001</span>:<span class="number">0</span><span class="operator">&gt;</span> <span class="keyword">create</span> <span class="string">&#x27;student&#x27;</span>,<span class="string">&#x27;info&#x27;</span></span><br><span class="line"><span class="number">0</span> <span class="type">row</span>(s) <span class="keyword">in</span> <span class="number">2.1590</span> seconds</span><br><span class="line"></span><br><span class="line"><span class="operator">=</span><span class="operator">&gt;</span> Hbase::<span class="keyword">Table</span> <span class="operator">-</span> student</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 插入一条数据，行键RowKey=1001, column 为name, value为&#x27;zhangsan&#x27;</span></span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span><span class="operator">&gt;</span> put <span class="string">&#x27;student&#x27;</span>,<span class="string">&#x27;1001&#x27;</span>,<span class="string">&#x27;info:name&#x27;</span>,<span class="string">&#x27;zhangsan&#x27;</span></span><br><span class="line"><span class="number">0</span> <span class="type">row</span>(s) <span class="keyword">in</span> <span class="number">0.2520</span> seconds</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 遍历表</span></span><br><span class="line">hbase(main):<span class="number">003</span>:<span class="number">0</span><span class="operator">&gt;</span> scan <span class="string">&#x27;student&#x27;</span></span><br><span class="line"><span class="type">ROW</span>                                         <span class="keyword">COLUMN</span><span class="operator">+</span>CELL                                                                                                                  </span><br><span class="line"> <span class="number">1001</span>                                       <span class="keyword">column</span><span class="operator">=</span>info:name, <span class="type">timestamp</span><span class="operator">=</span><span class="number">1646305250836</span>, <span class="keyword">value</span><span class="operator">=</span>zhangsan                                                                    </span><br><span class="line"><span class="number">1</span> <span class="type">row</span>(s) <span class="keyword">in</span> <span class="number">0.0330</span> seconds</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 退出</span></span><br><span class="line">hbase(main):<span class="number">004</span>:<span class="number">0</span><span class="operator">&gt;</span> exit</span><br></pre></td></tr></table></figure>
+
+<h4 id="停止"><a href="#停止" class="headerlink" title="停止"></a>停止</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node0 default]$ stop-hbase.sh </span><br><span class="line">stopping hbase......................</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="伪分布式"><a href="#伪分布式" class="headerlink" title="伪分布式"></a>伪分布式</h2><blockquote>
+<p><strong>伪分布式</strong></p>
+<p><a target="_blank" rel="noopener" href="https://hbase.apache.org/1.4/book.html#quickstart_pseudo">https://hbase.apache.org/1.4/book.html#quickstart_pseudo</a></p>
+</blockquote>
+<h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><h4 id="hbase-site-xml-1"><a href="#hbase-site-xml-1" class="headerlink" title="hbase-site.xml"></a>hbase-site.xml</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.cluster.distributed<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://node0:9000/hbase<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.property.dataDir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>/opt/bigdata/hbase/default/zookeeper<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><h4 id="1-启动HDFS"><a href="#1-启动HDFS" class="headerlink" title="1. 启动HDFS"></a>1. 启动HDFS</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动HDFS</span></span><br><span class="line">[zhangsan@node0 default]$ start-dfs.sh </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看后台进程</span></span><br><span class="line">[zhangsan@node0 default]$ jps</span><br><span class="line">58944 DataNode</span><br><span class="line">59136 SecondaryNameNode</span><br><span class="line">58783 NameNode</span><br></pre></td></tr></table></figure>
+
+<h5 id="HDFS-Web-UI"><a href="#HDFS-Web-UI" class="headerlink" title="HDFS Web UI"></a>HDFS Web UI</h5><p><img src="/img/HBase/image-20220303192821644.png" alt="image-20220303192821644"></p>
+<h4 id="2-启动HBase"><a href="#2-启动HBase" class="headerlink" title="2. 启动HBase"></a>2. 启动HBase</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动HBase</span></span><br><span class="line">(base) [zhangsan@node0 default]$ start-hbase.sh </span><br><span class="line">The authenticity of host &#x27;localhost (::1)&#x27; can&#x27;t be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:WidPRw9uecnRTrTxBUX35ET02GKdgnoup3FOVmGNBo0.</span><br><span class="line">ECDSA key fingerprint is MD5:c2:b6:e1:6d:e9:0e:b1:40:c2:a1:0e:b2:a8:ca:73:34.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? ·`yes`</span><br><span class="line">localhost: Warning: Permanently added &#x27;localhost&#x27; (ECDSA) to the list of known hosts.</span><br><span class="line">localhost: running zookeeper, logging to /opt/bigdata/hbase/default/logs/hbase-zhangsan-zookeeper-node0.out</span><br><span class="line">running master, logging to /opt/bigdata/hbase/default/logs/hbase-zhangsan-master-node0.out</span><br><span class="line">: running regionserver, logging to /opt/bigdata/hbase/default/logs/hbase-zhangsan-regionserver-node0.out</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看后台进程</span></span><br><span class="line">(base) [zhangsan@node0 default]$ jps</span><br><span class="line">58944 DataNode</span><br><span class="line">59136 SecondaryNameNode</span><br><span class="line">60945 `HRegionServer`</span><br><span class="line">60770 `HQuorumPeer`</span><br><span class="line">60861 `HMaster</span><br><span class="line">58783 NameNode</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="Web-UI-HMaster"><a href="#Web-UI-HMaster" class="headerlink" title="Web UI - HMaster"></a>Web UI - HMaster</h5><p><code>http://node0:16010</code></p>
+<p><img src="/img/HBase/image-20220303193535734.png" alt="image-20220303193535734"></p>
+<h5 id="Web-UI-HRegionServer"><a href="#Web-UI-HRegionServer" class="headerlink" title="Web UI - HRegionServer"></a>Web UI - HRegionServer</h5><p><code>http://node0:16301</code></p>
+<p><img src="/img/HBase/image-20220303193657044.png" alt="image-20220303193657044"></p>
+<h4 id="4-停止"><a href="#4-停止" class="headerlink" title="4. 停止"></a>4. 停止</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node0 default]$ stop-hbase.sh </span><br><span class="line">stopping hbase.....................</span><br><span class="line">localhost: running zookeeper, logging to /opt/bigdata/hbase/default/logs/hbase-zhangsan-zookeeper-node0.out</span><br><span class="line">localhost: stopping zookeeper.</span><br><span class="line"></span><br><span class="line">[zhangsan@node0 default]$ stop-dfs.sh </span><br><span class="line">Stopping namenodes on [node0]</span><br><span class="line">node0: stopping namenode</span><br><span class="line">node0: stopping datanode</span><br><span class="line">Stopping secondary namenodes [0.0.0.0]</span><br><span class="line">0.0.0.0: stopping secondarynamenode</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="全分布式"><a href="#全分布式" class="headerlink" title="全分布式"></a>全分布式</h2><blockquote>
+<p><strong>ZooKeeper副本模式</strong></p>
+<p>​		参考<code>Zookeeper实验手册</code></p>
+<p><strong>全分布式模式</strong></p>
+<p><a target="_blank" rel="noopener" href="https://hbase.apache.org/1.4/book.html#quickstart_fully_distributed">https://hbase.apache.org/1.4/book.html#quickstart_fully_distributed</a></p>
+</blockquote>
+<h3 id="集群规划"><a href="#集群规划" class="headerlink" title="集群规划"></a>集群规划</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>ZooKeeper</th>
+<th>HDFS</th>
+<th>YARN</th>
+<th>HBase</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>node1</code></td>
+<td><code>yes</code></td>
+<td><code>NameNode</code>,<code>DataNode</code>,<code>SecondaryNameNode</code></td>
+<td><code>ResourceManager</code>, <code>NodeManager</code></td>
+<td><code>HMaster</code>, <code>RegionServer</code></td>
+</tr>
+<tr>
+<td><code>node2</code></td>
+<td><code>yes</code></td>
+<td><code>DataNode</code></td>
+<td><code>NodeManager</code></td>
+<td><code>HMaster(backup)</code>,<code>RegionServer</code></td>
+</tr>
+<tr>
+<td><code>node3</code></td>
+<td><code>yes</code></td>
+<td><code>DataNode</code></td>
+<td><code>NodeManager</code></td>
+<td><code>RegionServer</code></td>
+</tr>
+</tbody></table>
+<h3 id="配置-2"><a href="#配置-2" class="headerlink" title="配置"></a>配置</h3><p>在<code>node1</code>节点配置，最后将其分发到其他节点。</p>
+<h5 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h5><p><code>~/.bashrc</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export ZOOKEEPER_HOME=/opt/bigdata/zookeeper/default</span><br><span class="line">export HADOOP_HOME=/opt/bigdata/hadoop/default</span><br><span class="line">export HBASE_HOME=/opt/bigdata/hbase/default</span><br><span class="line">export PATH=$ZOOKEEPER_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HBASE_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+<p>记得在Master节点<code>source</code>一下，让环境变量生效。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node0 ~]$ source .bashrc </span><br></pre></td></tr></table></figure>
+<h5 id="hbase-env-sh-1"><a href="#hbase-env-sh-1" class="headerlink" title="hbase-env.sh"></a>hbase-env.sh</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/java/default</span><br><span class="line">export HBASE_MANAGES_ZK=false</span><br></pre></td></tr></table></figure>
+
+<h5 id="hbase-site-xml-2"><a href="#hbase-site-xml-2" class="headerlink" title="hbase-site.xml"></a>hbase-site.xml</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.cluster.distributed<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://node1:9000/hbase<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.quorum<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1,node2,node3<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="backup-masters"><a href="#backup-masters" class="headerlink" title="backup-masters"></a>backup-masters</h5><p><code>$HBASE_HOME/conf/</code>目录下无此文件，需要手动创建。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node2</span><br></pre></td></tr></table></figure>
+
+<h5 id="regionservers"><a href="#regionservers" class="headerlink" title="regionservers"></a>regionservers</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">node1</span><br><span class="line">node2</span><br><span class="line">node3</span><br></pre></td></tr></table></figure>
+
+<p>修改完上述配置文件后，将其同步到其它节点。</p>
+<h3 id="使用-2"><a href="#使用-2" class="headerlink" title="使用"></a>使用</h3><h4 id="启动ZooKeeper"><a href="#启动ZooKeeper" class="headerlink" title="启动ZooKeeper"></a>启动ZooKeeper</h4><p>在三个节点中分别启动<code>ZooKeeper</code>集群：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ zkServer.sh start</span><br><span class="line">[zhangsan@node2 ~]$ zkServer.sh start</span><br><span class="line">[zhangsan@node3 ~]$ zkServer.sh start</span><br></pre></td></tr></table></figure>
+
+<p>可以查看到其中一台节点被选举为<code>leader</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node2 default]$ zkServer.sh status</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /opt/bigdata/zookeeper/default/bin/../conf/zoo.cfg</span><br><span class="line">Mode: leader</span><br></pre></td></tr></table></figure>
+
+<h4 id="启动HDFS"><a href="#启动HDFS" class="headerlink" title="启动HDFS"></a>启动HDFS</h4><p>在<code>node1</code>节点启动<code>Hadoop</code>集群：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 hbase-1.4.13]$ start-all.sh</span><br></pre></td></tr></table></figure>
+
+<h5 id="Wnode1"><a href="#Wnode1" class="headerlink" title="Wnode1"></a>Wnode1</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 hbase-1.4.13]$ jps</span><br><span class="line">18067 NodeManager</span><br><span class="line">18099 Jps</span><br><span class="line">97669 QuorumPeerMain</span><br><span class="line">17476 DataNode</span><br><span class="line">17928 ResourceManager</span><br><span class="line">17707 SecondaryNameNode</span><br><span class="line">17341 NameNode</span><br></pre></td></tr></table></figure>
+
+<h5 id="node2"><a href="#node2" class="headerlink" title="node2"></a>node2</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node2 default]$ jps</span><br><span class="line">78832 Jps</span><br><span class="line">78659 NodeManager</span><br><span class="line">78443 DataNode</span><br><span class="line">28351 QuorumPeerMain</span><br></pre></td></tr></table></figure>
+
+<h5 id="node3"><a href="#node3" class="headerlink" title="node3"></a>node3</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node3 default]$ jps</span><br><span class="line">78066 DataNode</span><br><span class="line">78466 Jps</span><br><span class="line">78281 NodeManager</span><br><span class="line">27977 QuorumPeerMain</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="启动HBase"><a href="#启动HBase" class="headerlink" title="启动HBase"></a>启动HBase</h4><p>在<code>node1</code>启动HBase 集群。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 conf]$ start-hbase.sh</span><br></pre></td></tr></table></figure>
+
+<p>查看启动情况</p>
+<h5 id="node1"><a href="#node1" class="headerlink" title="node1"></a>node1</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 hbase-1.4.13]$ jps</span><br><span class="line">18067 NodeManager</span><br><span class="line">97669 QuorumPeerMain</span><br><span class="line">17476 DataNode</span><br><span class="line">17928 ResourceManager</span><br><span class="line">19129 HRegionServer</span><br><span class="line">19241 Jps</span><br><span class="line">17707 SecondaryNameNode</span><br><span class="line">17341 NameNode</span><br><span class="line">18973 HMaster</span><br></pre></td></tr></table></figure>
+
+<h5 id="node2-1"><a href="#node2-1" class="headerlink" title="node2"></a>node2</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node2 default]$ jps</span><br><span class="line">78659 NodeManager</span><br><span class="line">79298 HRegionServer</span><br><span class="line">79442 HMaster</span><br><span class="line">78443 DataNode</span><br><span class="line">79644 Jps</span><br><span class="line">28351 QuorumPeerMain</span><br></pre></td></tr></table></figure>
+
+<h5 id="node3-1"><a href="#node3-1" class="headerlink" title="node3"></a>node3</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node3 default]$ jps</span><br><span class="line">78066 DataNode</span><br><span class="line">78281 NodeManager</span><br><span class="line">78921 HRegionServer</span><br><span class="line">27977 QuorumPeerMain</span><br><span class="line">79119 Jps</span><br></pre></td></tr></table></figure>
+
+<h5 id="Web-UI"><a href="#Web-UI" class="headerlink" title="Web UI"></a>Web UI</h5><h6 id="http-node1-16010-master-status-Master"><a href="#http-node1-16010-master-status-Master" class="headerlink" title="http://node1:16010/master-status (Master)"></a><a target="_blank" rel="noopener" href="http://node1:16010/master-status">http://node1:16010/master-status</a> (Master)</h6><h6 id="http-node2-16010-master-status-Backup-Master"><a href="#http-node2-16010-master-status-Backup-Master" class="headerlink" title="http://node2:16010/master-status(Backup Master)"></a><a target="_blank" rel="noopener" href="http://node2:16010/master-status">http://node2:16010/master-status</a>(Backup Master)</h6><h6 id="http-node1-16030-rs-status-RegionServer"><a href="#http-node1-16030-rs-status-RegionServer" class="headerlink" title="http://node1:16030/rs-status (RegionServer)"></a><a target="_blank" rel="noopener" href="http://node1:16030/rs-status">http://node1:16030/rs-status</a> (RegionServer)</h6><h6 id="http-node2-16030-rs-status-RegionServer"><a href="#http-node2-16030-rs-status-RegionServer" class="headerlink" title="http://node2:16030/rs-status (RegionServer)"></a><a target="_blank" rel="noopener" href="http://node2:16030/rs-status">http://node2:16030/rs-status</a> (RegionServer)</h6><h6 id="http-node3-16030-rs-status-RegionServer"><a href="#http-node3-16030-rs-status-RegionServer" class="headerlink" title="http://node3:16030/rs-status (RegionServer)"></a><a target="_blank" rel="noopener" href="http://node3:16030/rs-status">http://node3:16030/rs-status</a> (RegionServer)</h6><p><img src="/img/HBase/image-20220304145047583.png" alt="image-20220304145047583"></p>
+<h4 id="停止HBase"><a href="#停止HBase" class="headerlink" title="停止HBase"></a>停止HBase</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ stop-hbase.sh </span><br></pre></td></tr></table></figure>
+
+<h4 id="停止HDFS"><a href="#停止HDFS" class="headerlink" title="停止HDFS"></a>停止HDFS</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ stop-all.sh </span><br></pre></td></tr></table></figure>
+
+<h4 id="停止ZooKeeper"><a href="#停止ZooKeeper" class="headerlink" title="停止ZooKeeper"></a>停止ZooKeeper</h4><p>分别停止各节点上的ZooKeeper</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ zkServer.sh stop</span><br><span class="line">[zhangsan@node2 ~]$ zkServer.sh stop</span><br><span class="line">[zhangsan@node3 ~]$ zkServer.sh stop</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com">QuZheng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com/HBase/HBase/">https://www.studybigdata.com/HBase/HBase/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HBase/">HBase</a><a class="post-meta__tags" href="/tags/HBase%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">HBase环境搭建</a><a class="post-meta__tags" href="/tags/HBase%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F/">HBase伪分布式</a><a class="post-meta__tags" href="/tags/HBase%E5%AE%8C%E5%85%A8%E5%88%86%E5%B8%83%E5%BC%8F/">HBase完全分布式</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/HBase/HBase_SRC/" title="HBase Source Code"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">HBase Source Code</div></div><div class="info-2"><div class="info-item-1">HBase Source CodeHMaster选举1234567891011121314151617181920212223242526272829303132333435363738394041424344private void startActiveMasterManager(int infoPort) throws KeeperException &#123;    String backupZNode = ZNodePaths.joinZNode(      zooKeeper.getZNodePaths().backupMasterAddressesZNode, serverName.toString());    /*    * Add a ZNode for ourselves in the backup master directory since we    * may not become the active master. If so, we want the actual active    * master to know we are backu...</div></div></div></a><a class="pagination-related" href="/SQLite3/" title="SQLite Python API"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">SQLite Python API</div></div><div class="info-2"><div class="info-item-1">导入sqlite31import sqlite3  创建数据库链接1conn = sqlite3.connect(&quot;test.db&quot;)  获取游标1cursor = conn.cursor()  创建表1cursor.execute(&quot;create table user(id int primary key, name varchar(20) )&quot;)  插入数据 插入一条数据  12cursor.execute(&#x27;insert into user(id, name) values (1, \&#x27;aaa\&#x27;)&#x27;)print(cursor.rowcount)   插入多条数据  executemany(sqlstatement, values) 12cursor.executemany(&#x27;insert into user(id,name) values (?,?)&#x27;, [(2, &#x27;AAA&#x27;), (3, &#x27;BBB&#x27;)])print(cursor.ro...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/HBase/HBase_SRC/" title="HBase Source Code"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-23</div><div class="info-item-2">HBase Source Code</div></div><div class="info-2"><div class="info-item-1">HBase Source CodeHMaster选举1234567891011121314151617181920212223242526272829303132333435363738394041424344private void startActiveMasterManager(int infoPort) throws KeeperException &#123;    String backupZNode = ZNodePaths.joinZNode(      zooKeeper.getZNodePaths().backupMasterAddressesZNode, serverName.toString());    /*    * Add a ZNode for ourselves in the backup master directory since we    * may not become the active master. If so, we want the actual active    * master to know we are backu...</div></div></div></a><a class="pagination-related" href="/HBase/HBase_MapReduce/" title="HBase与MapReduce"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-23</div><div class="info-item-2">HBase与MapReduce</div></div><div class="info-2"><div class="info-item-1">HBase与MapReduceHBase可以作为MapReduce的输入数据源，也可以作为MapReduce的输出目的地，甚至可以在MapReduce任务过程中使用HBase来共享资源。 12345678(python37) [zhangsan@node0 default]$ bin/hbase mapredcpSLF4J: Class path contains multiple SLF4J bindings.SLF4J: Found binding in [jar:file:/opt/bigdata/hbase/hbase-1.4.13/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]SLF4J: Found binding in [jar:file:/opt/bigdata/hadoop/hadoop-2.7.3/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.cl...</div></div></div></a><a class="pagination-related" href="/ClusterManager/" title="HBase集群管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-23</div><div class="info-item-2">HBase集群管理</div></div><div class="info-2"><div class="info-item-1">HBase集群管理新增Hadoop节点Master slaves新增node4 配置分发( hosts, slaves )  node4启动DataNode和NodeManager 12[zhangsan@node4 default]$ sbin/hadoop-daemon.sh start datanode[zhangsan@node4 default]$ sbin/yarn-daemon.sh start nodemanager    刷新节点状态1[zhangsan@node1 ~]$ hdfs dfsadmin -refreshNodes    负载均衡123456# 设置负载均衡带宽[zhangsan@node1 ~]$ hdfs dfsadmin -setBalancerBandwidth bytes# 磁盘使用率阈值，单位为百分比。此命令会产生一个进程，并在logs目录输出日志；负载均衡完毕，进程结束。# -threshold# 默认值:10%。该值确保每个DataNode上的磁盘使用率与集群整体使用率的差距不超过10%。[zhangsan@node1 ~]$ st...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">QuZheng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">118</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">84</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">26</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">HBase</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2"><span class="toc-number">2.</span> <span class="toc-text">环境部署</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Standalone"><span class="toc-number">2.1.</span> <span class="toc-text">Standalone</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87"><span class="toc-number">2.1.1.</span> <span class="toc-text">准备</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">上传</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%8E%8B"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">解压</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">2.1.2.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#hbase-env-sh"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">hbase-env.sh</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hbase-site-xml"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">hbase-site.xml</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#bashrc"><span class="toc-number">2.1.2.3.</span> <span class="toc-text">~&#x2F;.bashrc</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-number">2.1.3.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8"><span class="toc-number">2.1.3.1.</span> <span class="toc-text">启动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HelloWorld"><span class="toc-number">2.1.3.2.</span> <span class="toc-text">HelloWorld</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2"><span class="toc-number">2.1.3.3.</span> <span class="toc-text">停止</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">伪分布式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#hbase-site-xml-1"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">hbase-site.xml</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%90%AF%E5%8A%A8HDFS"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">1. 启动HDFS</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#HDFS-Web-UI"><span class="toc-number">2.2.2.1.1.</span> <span class="toc-text">HDFS Web UI</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%90%AF%E5%8A%A8HBase"><span class="toc-number">2.2.2.2.</span> <span class="toc-text">2. 启动HBase</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Web-UI-HMaster"><span class="toc-number">2.2.2.2.1.</span> <span class="toc-text">Web UI - HMaster</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Web-UI-HRegionServer"><span class="toc-number">2.2.2.2.2.</span> <span class="toc-text">Web UI - HRegionServer</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%81%9C%E6%AD%A2"><span class="toc-number">2.2.2.3.</span> <span class="toc-text">4. 停止</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A8%E5%88%86%E5%B8%83%E5%BC%8F"><span class="toc-number">2.3.</span> <span class="toc-text">全分布式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4%E8%A7%84%E5%88%92"><span class="toc-number">2.3.1.</span> <span class="toc-text">集群规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-2"><span class="toc-number">2.3.2.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.2.1.</span> <span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hbase-env-sh-1"><span class="toc-number">2.3.2.2.</span> <span class="toc-text">hbase-env.sh</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hbase-site-xml-2"><span class="toc-number">2.3.2.3.</span> <span class="toc-text">hbase-site.xml</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#backup-masters"><span class="toc-number">2.3.2.4.</span> <span class="toc-text">backup-masters</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#regionservers"><span class="toc-number">2.3.2.5.</span> <span class="toc-text">regionservers</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-2"><span class="toc-number">2.3.3.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8ZooKeeper"><span class="toc-number">2.3.3.1.</span> <span class="toc-text">启动ZooKeeper</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8HDFS"><span class="toc-number">2.3.3.2.</span> <span class="toc-text">启动HDFS</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Wnode1"><span class="toc-number">2.3.3.2.1.</span> <span class="toc-text">Wnode1</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#node2"><span class="toc-number">2.3.3.2.2.</span> <span class="toc-text">node2</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#node3"><span class="toc-number">2.3.3.2.3.</span> <span class="toc-text">node3</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8HBase"><span class="toc-number">2.3.3.3.</span> <span class="toc-text">启动HBase</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#node1"><span class="toc-number">2.3.3.3.1.</span> <span class="toc-text">node1</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#node2-1"><span class="toc-number">2.3.3.3.2.</span> <span class="toc-text">node2</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#node3-1"><span class="toc-number">2.3.3.3.3.</span> <span class="toc-text">node3</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Web-UI"><span class="toc-number">2.3.3.3.4.</span> <span class="toc-text">Web UI</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#http-node1-16010-master-status-Master"><span class="toc-number">2.3.3.3.4.1.</span> <span class="toc-text">http:&#x2F;&#x2F;node1:16010&#x2F;master-status (Master)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#http-node2-16010-master-status-Backup-Master"><span class="toc-number">2.3.3.3.4.2.</span> <span class="toc-text">http:&#x2F;&#x2F;node2:16010&#x2F;master-status(Backup Master)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#http-node1-16030-rs-status-RegionServer"><span class="toc-number">2.3.3.3.4.3.</span> <span class="toc-text">http:&#x2F;&#x2F;node1:16030&#x2F;rs-status (RegionServer)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#http-node2-16030-rs-status-RegionServer"><span class="toc-number">2.3.3.3.4.4.</span> <span class="toc-text">http:&#x2F;&#x2F;node2:16030&#x2F;rs-status (RegionServer)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#http-node3-16030-rs-status-RegionServer"><span class="toc-number">2.3.3.3.4.5.</span> <span class="toc-text">http:&#x2F;&#x2F;node3:16030&#x2F;rs-status (RegionServer)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2HBase"><span class="toc-number">2.3.3.4.</span> <span class="toc-text">停止HBase</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2HDFS"><span class="toc-number">2.3.3.5.</span> <span class="toc-text">停止HDFS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2ZooKeeper"><span class="toc-number">2.3.3.6.</span> <span class="toc-text">停止ZooKeeper</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Kafka/" title="Kafka">Kafka</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-02-environment/" title="第2章 数仓基础环境搭建">第2章 数仓基础环境搭建</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-01-introduction/" title="第1章 教育大数据分析项目介绍">第1章 教育大数据分析项目介绍</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Linux/Linux_SSH_Passwordless_login/" title="SSH无密登录配置">SSH无密登录配置</a><time datetime="2026-03-08T03:42:26.000Z" title="Created 2026-03-08 11:42:26">2026-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Python/Python/" title="Python">Python</a><time datetime="2023-11-19T13:58:00.000Z" title="Created 2023-11-19 21:58:00">2023-11-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By QuZheng</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

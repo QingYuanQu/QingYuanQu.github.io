@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>DataNode工作机制与实操案例演示 | 学习大数据</title><meta name="author" content="QuZheng"><meta name="copyright" content="QuZheng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、引言 Hadoop HDFS简介  分布式文件系统概述 HDFS架构：NameNode与DataNode   DataNode的重要性  数据存储与访问的关键角色 数据完整性与高可用性的保障     二、DataNode工作机制 启动与注册 DataNode启动后向NameNode注册 注册成功后，周期性向NameNode上报块信息   心跳机制 心跳周期（默认每3秒一次） 心跳返回结果：Na">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DataNode工作机制与实操案例演示">
+<meta property="og:url" content="https://www.studybigdata.com/Hadoop/Hadoop_DataNode/index.html">
+<meta property="og:site_name" content="学习大数据">
+<meta property="og:description" content="一、引言 Hadoop HDFS简介  分布式文件系统概述 HDFS架构：NameNode与DataNode   DataNode的重要性  数据存储与访问的关键角色 数据完整性与高可用性的保障     二、DataNode工作机制 启动与注册 DataNode启动后向NameNode注册 注册成功后，周期性向NameNode上报块信息   心跳机制 心跳周期（默认每3秒一次） 心跳返回结果：Na">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.studybigdata.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2022-01-15T07:55:26.000Z">
+<meta property="article:modified_time" content="2026-03-09T01:38:42.483Z">
+<meta property="article:author" content="QuZheng">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.studybigdata.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DataNode工作机制与实操案例演示",
+  "url": "https://www.studybigdata.com/Hadoop/Hadoop_DataNode/",
+  "image": "https://www.studybigdata.com/img/butterfly-icon.png",
+  "datePublished": "2022-01-15T07:55:26.000Z",
+  "dateModified": "2026-03-09T01:38:42.483Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "QuZheng",
+      "url": "https://www.studybigdata.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.studybigdata.com/Hadoop/Hadoop_DataNode/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DataNode工作机制与实操案例演示',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">学习大数据</span></a><a class="nav-page-title" href="/"><span class="site-name">DataNode工作机制与实操案例演示</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">DataNode工作机制与实操案例演示</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-01-15T07:55:26.000Z" title="Created 2022-01-15 15:55:26">2022-01-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-09T01:38:42.483Z" title="Updated 2026-03-09 09:38:42">2026-03-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Hadoop/">Hadoop</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h2><ol>
+<li><p><strong>Hadoop HDFS简介</strong></p>
+<ul>
+<li>分布式文件系统概述</li>
+<li>HDFS架构：NameNode与DataNode</li>
+</ul>
+</li>
+<li><p><strong>DataNode的重要性</strong></p>
+<ul>
+<li>数据存储与访问的关键角色</li>
+<li>数据完整性与高可用性的保障</li>
+</ul>
+<p><img src="/./img/Hadoop_DataNode/hdfsarchitecture.gif" alt="HDFS 架构"></p>
+</li>
+</ol>
+<h2 id="二、DataNode工作机制"><a href="#二、DataNode工作机制" class="headerlink" title="二、DataNode工作机制"></a>二、DataNode工作机制</h2><ol>
+<li><strong>启动与注册</strong><ul>
+<li>DataNode启动后向NameNode注册</li>
+<li>注册成功后，周期性向NameNode上报块信息</li>
+</ul>
+</li>
+<li><strong>心跳机制</strong><ul>
+<li>心跳周期（默认每3秒一次）</li>
+<li>心跳返回结果：NameNode的命令（如复制、删除数据块）</li>
+<li>心跳超时处理（默认10分钟+30s无心跳则认为节点不可用）</li>
+</ul>
+</li>
+<li><strong>数据存储与管理</strong><ul>
+<li>数据块以文件形式存储在磁盘上</li>
+<li>每个数据块包括数据文件和元数据文件（包含长度、校验和、时间戳）</li>
+</ul>
+</li>
+</ol>
+<h2 id="三、实操案例演示"><a href="#三、实操案例演示" class="headerlink" title="三、实操案例演示"></a>三、实操案例演示</h2><ul>
+<li><h6 id="假设已有Hadoop集群环境"><a href="#假设已有Hadoop集群环境" class="headerlink" title="假设已有Hadoop集群环境"></a>假设已有Hadoop集群环境</h6></li>
+<li><h6 id="确认DataNode节点状态"><a href="#确认DataNode节点状态" class="headerlink" title="确认DataNode节点状态"></a>确认DataNode节点状态</h6></li>
+</ul>
+<h3 id="1-DataNode启动与注册"><a href="#1-DataNode启动与注册" class="headerlink" title="1. DataNode启动与注册"></a><strong>1. DataNode启动与注册</strong></h3><h4 id="1-1-新增DataNode节点"><a href="#1-1-新增DataNode节点" class="headerlink" title="1.1 新增DataNode节点"></a>1.1 新增DataNode节点</h4><h5 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h5><ul>
+<li>hosts配置（all）</li>
+<li>ssh免密登录（master–&gt; node4）</li>
+<li><code>slaves</code>新增<code>node4</code>（all）</li>
+</ul>
+<h5 id="启动DataNode和NodeManager"><a href="#启动DataNode和NodeManager" class="headerlink" title="启动DataNode和NodeManager"></a>启动DataNode和NodeManager</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node4 default]$ hadoop-daemon.sh start datanode</span><br></pre></td></tr></table></figure>
+
+<h5 id="刷新节点状态"><a href="#刷新节点状态" class="headerlink" title="刷新节点状态"></a>刷新节点状态</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ hdfs dfsadmin -refreshNodes</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./img/Hadoop_DataNode/image-20250218090333204.png" alt="image-20250218090333204"></p>
+<h5 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置负载均衡带宽</span></span><br><span class="line">[zhangsan@node1 ~]$ hdfs dfsadmin -setBalancerBandwidth bytes</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">磁盘使用率阈值，单位为百分比。此命令会产生一个进程，并在logs目录输出日志；负载均衡完毕，进程结束。</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-threshold</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">默认值:10%。该值确保每个DataNode上的磁盘使用率与集群整体使用率的差距不超过10%。</span></span><br><span class="line">[zhangsan@node1 ~]$ start-balancer.sh -threshold 1</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://partners-intl.aliyun.com/help/en/e-mapreduce/latest/hdfs-balancer">https://partners-intl.aliyun.com/help/en/e-mapreduce/latest/hdfs-balancer</a></p>
+</blockquote>
+<h4 id="1-2-移除DataNode节点"><a href="#1-2-移除DataNode节点" class="headerlink" title="1.2 移除DataNode节点"></a>1.2 移除DataNode节点</h4><h5 id="Master配置排除节点列表"><a href="#Master配置排除节点列表" class="headerlink" title="Master配置排除节点列表"></a>Master配置排除节点列表</h5><h6 id="hdfs-site-xml"><a href="#hdfs-site-xml" class="headerlink" title="hdfs-site.xml"></a><code>hdfs-site.xml</code></h6><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.hosts.exclude<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/opt/bigdata/hadoop/hadoop-2.7.3/etc/hadoop/datanode-excludes<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="datanode-excludes-一行一个"><a href="#datanode-excludes-一行一个" class="headerlink" title="datanode-excludes (一行一个)"></a>datanode-excludes (一行一个)</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node4</span><br></pre></td></tr></table></figure>
+
+<h6 id="yarn-site-xml"><a href="#yarn-site-xml" class="headerlink" title="yarn-site.xml"></a><code>yarn-site.xml</code></h6><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.hosts.exclude<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/opt/bigdata/hadoop/hadoop-2.7.3/etc/hadoop/nodemanager-excludes<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="nodemanager-excludes-一行一个"><a href="#nodemanager-excludes-一行一个" class="headerlink" title="nodemanager-excludes (一行一个)"></a>nodemanager-excludes (一行一个)</h6><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node4</span><br></pre></td></tr></table></figure>
+
+<h5 id="刷新节点状态-1"><a href="#刷新节点状态-1" class="headerlink" title="刷新节点状态"></a>刷新节点状态</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 hadoop]$ hdfs dfsadmin -refreshNodes</span><br></pre></td></tr></table></figure>
+
+<p><code>Decommission In Progress --&gt; Decommissioned</code></p>
+<p><img src="/./img/Hadoop_DataNode/image-20250218090429025.png" alt="image-20250218090429025"></p>
+<p><img src="/./img/Hadoop_DataNode/image-20250218090528946.png" alt="image-20250218090528946"></p>
+<h5 id="停止守护进程"><a href="#停止守护进程" class="headerlink" title="停止守护进程"></a>停止守护进程</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node4 ~]$ hadoop-daemon.sh stop datanode</span><br></pre></td></tr></table></figure>
+
+<h5 id="查看下线情况"><a href="#查看下线情况" class="headerlink" title="查看下线情况"></a>查看下线情况</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ hdfs dfsadmin -report</span><br><span class="line">[zhangsan@node1 ~]$ yarn node -list</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-心跳机制验证"><a href="#2-心跳机制验证" class="headerlink" title="2. 心跳机制验证"></a>2. <strong>心跳机制验证</strong></h3><ul>
+<li>演示DataNode心跳发送过程</li>
+<li>修改心跳间隔（通过hdfs-site.xml配置文件）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>配置值</th>
+<th>说明</th>
+<th>自定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dfs.heartbeat.interval</td>
+<td>3</td>
+<td>Determines datanode heartbeat interval in seconds.</td>
+<td>3</td>
+</tr>
+<tr>
+<td>dfs.namenode.heartbeat.recheck-interval</td>
+<td>300000</td>
+<td>This time decides the interval to check for expired datanodes. With this value and dfs.heartbeat.interval, the interval of deciding the datanode is stale or not is also calculated. The unit of this configuration is millisecond.</td>
+<td>60000</td>
+</tr>
+</tbody></table>
+<ul>
+<li>观察NameNode对心跳超时的处理</li>
+</ul>
+<blockquote>
+<p>默认dfs.namenode.heartbeat.recheck-interval为5分钟，dfs.heartbeat.interval默认为3秒</p>
+<p>DataNode节点掉线时限是指系统检测到DataNode不再响应的时间阈值。</p>
+<p>TimeOut假定为超长时间（默认为10分钟+30秒）：</p>
+<p>TimeOut &#x3D; 2 * dfs.namenode.heartbeat.recheck-interval + 10 * dfs.heartbeat.interval</p>
+</blockquote>
+<h3 id="3-数据块管理"><a href="#3-数据块管理" class="headerlink" title="3. 数据块管理"></a><strong>3. 数据块管理</strong></h3><ul>
+<li>演示向HDFS写入文件，观察DataNode上数据块的变化</li>
+<li>演示DataNode上数据块的删除与恢复</li>
+</ul>
+<ol>
+<li><p><strong>检查集群状态</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfsadmin -report</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="3-1-数据块的写入"><a href="#3-1-数据块的写入" class="headerlink" title="3.1 数据块的写入"></a>3.1 数据块的写入</h4><ol>
+<li><p><strong>创建本地文件</strong>：<br>创建一个简单的文本文件，用于写入HDFS。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Hello, HDFS&quot;</span> &gt; localfile.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>将文件写入HDFS</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -<span class="built_in">mkdir</span> -p /user/zhangsan/</span><br><span class="line">hdfs dfs -put localfile.txt /user/zhangsan/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>观察DataNode上的数据块</strong>：</p>
+<ul>
+<li><p>通过Hadoop Web UI查看：打开浏览器并访问 <code>http://&lt;NameNode-IP&gt;:50070</code>，导航到“DataNodes”页面，查看数据块信息。</p>
+</li>
+<li><p>或者使用命令行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs fsck /user/zhangsan/localfile.txt -files -blocks -locations</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ hdfs fsck /user/zhangsan/localfile.txt -files -blocks -locations</span><br><span class="line">Connecting to namenode via http://node1:50070/fsck?ugi=zhangsan&amp;files=1&amp;blocks=1&amp;locations=1&amp;path=%2Fuser%2Fzhangsan%2Flocalfile.txt</span><br><span class="line">FSCK started by zhangsan (auth:SIMPLE) from /192.168.92.101 <span class="keyword">for</span> path /user/zhangsan/localfile.txt at Tue Feb 18 08:24:56 CST 2025</span><br><span class="line">/user/zhangsan/localfile.txt 12 bytes, 1 block(s):  OK</span><br><span class="line">0. BP-1428990012-192.168.92.101-1739836208744:blk_1073741825_1001 len=12 repl=3 </span><br><span class="line"></span><br><span class="line">[DatanodeInfoWithStorage[192.168.92.102:50010,DS-b0117f0b-206a-4cb5-8bf2-bdb0c2cf387b,DISK], </span><br><span class="line">DatanodeInfoWithStorage[192.168.92.103:50010,DS-36e58276-08e8-4a36-888e-749cad5fbdfc,DISK], </span><br><span class="line">DatanodeInfoWithStorage[192.168.92.101:50010,DS-caf1a8a6-01ac-447f-9d07-006d194e7b64,DISK]]</span><br><span class="line"></span><br><span class="line">Status: HEALTHY</span><br><span class="line"> Total size:	12 B</span><br><span class="line"> Total <span class="built_in">dirs</span>:	0</span><br><span class="line"> Total files:	1</span><br><span class="line"> Total symlinks:		0</span><br><span class="line"> Total blocks (validated):	1 (avg. block size 12 B)</span><br><span class="line"> Minimally replicated blocks:	1 (100.0 %)</span><br><span class="line"> Over-replicated blocks:	0 (0.0 %)</span><br><span class="line"> Under-replicated blocks:	0 (0.0 %)</span><br><span class="line"> Mis-replicated blocks:		0 (0.0 %)</span><br><span class="line"> Default replication <span class="built_in">factor</span>:	3</span><br><span class="line"> Average block replication:	3.0</span><br><span class="line"> Corrupt blocks:		0</span><br><span class="line"> Missing replicas:		0 (0.0 %)</span><br><span class="line"> Number of data-nodes:		3</span><br><span class="line"> Number of racks:		1</span><br><span class="line">FSCK ended at Tue Feb 18 08:24:56 CST 2025 <span class="keyword">in</span> 6 milliseconds</span><br><span class="line"></span><br><span class="line">The filesystem under path <span class="string">&#x27;/user/zhangsan/localfile.txt&#x27;</span> is HEALTHY</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-数据块的删除"><a href="#3-2-数据块的删除" class="headerlink" title="3.2 数据块的删除"></a>3.2 数据块的删除</h4><ol>
+<li><p><strong>删除HDFS中的文件</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -<span class="built_in">rm</span> /user/zhangsan/localfile.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>观察数据块的删除</strong>：</p>
+<ul>
+<li>再次通过Hadoop Web UI或命令行工具检查数据块是否已被删除。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan<span class="meta">@node1</span> ~]$ hdfs fsck /user/zhangsan/localfile.txt -files -blocks -locations</span><br><span class="line">FileSystem is inaccessible due to:</span><br><span class="line">java.io.FileNotFoundException: File does not exist: /user/zhangsan/localfile.txt</span><br><span class="line">	at org.apache.hadoop.fs.FileSystem.resolvePath(FileSystem.java:<span class="number">753</span>)</span><br><span class="line">    ... ...</span><br><span class="line">	at org.apache.hadoop.hdfs.tools.DFSck.main(DFSck.java:<span class="number">377</span>)</span><br><span class="line"></span><br><span class="line">DFSck exiting</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="3-3-数据块的恢复"><a href="#3-3-数据块的恢复" class="headerlink" title="3.3 数据块的恢复"></a>3.3 数据块的恢复</h4><ol>
+<li><p><strong>准备文件</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ hdfs dfs -put localfile.txt /user/zhangsan/</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p><strong>模拟数据块丢失</strong>：</p>
+<ul>
+<li>通过关闭一个DataNode来模拟数据块丢失，然后观察Hadoop如何处理。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 手动停止DataNode2</span></span><br><span class="line">[zhangsan@node2 ~]$ hadoop-daemon.sh stop datanode</span><br></pre></td></tr></table></figure></li>
+</ol>
+<blockquote>
+<p>注意：默认需要等待10min+30s后，NameNode才会认为副本数减少。</p>
+</blockquote>
+<ol>
+<li><p><strong>恢复数据块</strong>：</p>
+<ul>
+<li>如果副本设置（默认是3），Hadoop会自动从其他副本中恢复数据块。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 手动启动DataNode4</span></span><br><span class="line">[zhangsan@node4 ~]$ hadoop-daemon.sh start datanode</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p><strong>验证数据块恢复</strong>：</p>
+<ul>
+<li>再次检查Hadoop Web UI或使用命令行工具验证数据块的状态。</li>
+</ul>
+</li>
+</ol>
+<h2 id="四、总结与问答"><a href="#四、总结与问答" class="headerlink" title="四、总结与问答"></a>四、总结与问答</h2><ol>
+<li><strong>课程总结</strong><ul>
+<li>回顾DataNode工作机制与实操案例演示要点</li>
+</ul>
+</li>
+<li><strong>问答环节</strong><ul>
+<li>解答学员疑问</li>
+<li>讨论DataNode在实际应用中的常见问题与解决方案</li>
+</ul>
+</li>
+</ol>
+<h2 id="课程注意事项"><a href="#课程注意事项" class="headerlink" title="课程注意事项"></a>课程注意事项</h2><ul>
+<li>确保实操案例演示环境稳定，避免操作失误导致集群故障。</li>
+<li>提前准备好演示所需的数据文件和配置文件。</li>
+<li>鼓励学员积极参与讨论，提出自己的见解和疑问。</li>
+</ul>
+<p>通过这样的课程大纲，学员可以在短时间内全面了解DataNode的工作机制，并通过实操案例演示加深理解，为后续的Hadoop HDFS运维与管理打下坚实基础。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com">QuZheng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com/Hadoop/Hadoop_DataNode/">https://www.studybigdata.com/Hadoop/Hadoop_DataNode/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/Hadoop/Hadoop_HDFS/" title="Hadoop HDFS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Hadoop HDFS</div></div><div class="info-2"><div class="info-item-1">块大小默认块大小   版本 大小    1.x 64MB   2.x&#x2F;3.x 128MB   本地 32MB   根据硬盘速度配置块大小   硬盘类型 硬盘速度 建议Block大小    普通机械硬盘 100MB&#x2F;s 128MB   固态硬盘（普通） 300MB&#x2F;s 256MB   固态硬盘（高级） 600MB&#x2F;s 512MB   文件实际占用Linux文件系统的空间当一个文件小于128MB时，占用Linux文件系统多少存储空间？ 答：占用实际的磁盘存储，而不是Block大小。 https://blog.csdn.net/m0_67391120/article/details/126599677 NameNode与DataNode DataNode启动时，向NameNode汇报本节点中托管的Block的情况，此后，默认每6小时汇报一次。 DataNode启动后，每3s向NameNode发送一次心跳信号，当NameNode在 10分钟+30s 未收到心跳信号时，认为DataNode挂掉。 DataNode默认超时时间：  Timeout &#...</div></div></div></a><a class="pagination-related" href="/Hadoop/Hadoop_YARN/" title="Hadoop_YARN"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Hadoop_YARN</div></div><div class="info-2"><div class="info-item-1">YARN概览  HDFS在两个版本中都存在；  MapReduce是Hadoop v1中唯一的Execution Engine；  YARN框架提供的Work Scheduling与正在执行的Work类型无关；  Hadoop v2上的所有的Execution Engine都作为YARN应用程序实现。  Hadoop v2支持任何Execution Engine，包括MapReduce的端口，该端口现在是一个YARN应用程序。   为什么选择YARN MapReduce是batch-based，不适合 real-time,  near-real-time, Graph,  Iterative数据处理； Hadoop v1限制了运行其他框架，YARN使MapReduce以外的工作也能够在Hadoop集群上执行； Hadoop v1 的JobTracker存在并发问题，一个Hadoop Cluster的限制在3000-4000个节点。 YARN的目标是能够扩展到10000个节点； YARN允许在同一个集群中同时运行不同版本的MapReduce；  YARN是一个分布式调度器，负责以下...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">QuZheng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">118</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">84</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">26</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BC%95%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">一、引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81DataNode%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="toc-number">2.</span> <span class="toc-text">二、DataNode工作机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E6%93%8D%E6%A1%88%E4%BE%8B%E6%BC%94%E7%A4%BA"><span class="toc-number">3.</span> <span class="toc-text">三、实操案例演示</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E5%B7%B2%E6%9C%89Hadoop%E9%9B%86%E7%BE%A4%E7%8E%AF%E5%A2%83"><span class="toc-number">3.1.</span> <span class="toc-text">假设已有Hadoop集群环境</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%A1%AE%E8%AE%A4DataNode%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81"><span class="toc-number">3.2.</span> <span class="toc-text">确认DataNode节点状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-DataNode%E5%90%AF%E5%8A%A8%E4%B8%8E%E6%B3%A8%E5%86%8C"><span class="toc-number">3.3.</span> <span class="toc-text">1. DataNode启动与注册</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E6%96%B0%E5%A2%9EDataNode%E8%8A%82%E7%82%B9"><span class="toc-number">3.3.1.</span> <span class="toc-text">1.1 新增DataNode节点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">3.3.1.1.</span> <span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8DataNode%E5%92%8CNodeManager"><span class="toc-number">3.3.1.2.</span> <span class="toc-text">启动DataNode和NodeManager</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%B7%E6%96%B0%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81"><span class="toc-number">3.3.1.3.</span> <span class="toc-text">刷新节点状态</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">3.3.1.4.</span> <span class="toc-text">负载均衡</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E7%A7%BB%E9%99%A4DataNode%E8%8A%82%E7%82%B9"><span class="toc-number">3.3.2.</span> <span class="toc-text">1.2 移除DataNode节点</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Master%E9%85%8D%E7%BD%AE%E6%8E%92%E9%99%A4%E8%8A%82%E7%82%B9%E5%88%97%E8%A1%A8"><span class="toc-number">3.3.2.1.</span> <span class="toc-text">Master配置排除节点列表</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#hdfs-site-xml"><span class="toc-number">3.3.2.1.1.</span> <span class="toc-text">hdfs-site.xml</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#datanode-excludes-%E4%B8%80%E8%A1%8C%E4%B8%80%E4%B8%AA"><span class="toc-number">3.3.2.1.2.</span> <span class="toc-text">datanode-excludes (一行一个)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#yarn-site-xml"><span class="toc-number">3.3.2.1.3.</span> <span class="toc-text">yarn-site.xml</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#nodemanager-excludes-%E4%B8%80%E8%A1%8C%E4%B8%80%E4%B8%AA"><span class="toc-number">3.3.2.1.4.</span> <span class="toc-text">nodemanager-excludes (一行一个)</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%B7%E6%96%B0%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81-1"><span class="toc-number">3.3.2.2.</span> <span class="toc-text">刷新节点状态</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%81%9C%E6%AD%A2%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.3.2.3.</span> <span class="toc-text">停止守护进程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E4%B8%8B%E7%BA%BF%E6%83%85%E5%86%B5"><span class="toc-number">3.3.2.4.</span> <span class="toc-text">查看下线情况</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BF%83%E8%B7%B3%E6%9C%BA%E5%88%B6%E9%AA%8C%E8%AF%81"><span class="toc-number">3.4.</span> <span class="toc-text">2. 心跳机制验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E5%9D%97%E7%AE%A1%E7%90%86"><span class="toc-number">3.5.</span> <span class="toc-text">3. 数据块管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E6%95%B0%E6%8D%AE%E5%9D%97%E7%9A%84%E5%86%99%E5%85%A5"><span class="toc-number">3.5.1.</span> <span class="toc-text">3.1 数据块的写入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E6%95%B0%E6%8D%AE%E5%9D%97%E7%9A%84%E5%88%A0%E9%99%A4"><span class="toc-number">3.5.2.</span> <span class="toc-text">3.2 数据块的删除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E6%95%B0%E6%8D%AE%E5%9D%97%E7%9A%84%E6%81%A2%E5%A4%8D"><span class="toc-number">3.5.3.</span> <span class="toc-text">3.3 数据块的恢复</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%80%BB%E7%BB%93%E4%B8%8E%E9%97%AE%E7%AD%94"><span class="toc-number">4.</span> <span class="toc-text">四、总结与问答</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E7%A8%8B%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">5.</span> <span class="toc-text">课程注意事项</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Kafka/" title="Kafka">Kafka</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-02-environment/" title="第2章 数仓基础环境搭建">第2章 数仓基础环境搭建</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-01-introduction/" title="第1章 教育大数据分析项目介绍">第1章 教育大数据分析项目介绍</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Linux/Linux_SSH_Passwordless_login/" title="SSH无密登录配置">SSH无密登录配置</a><time datetime="2026-03-08T03:42:26.000Z" title="Created 2026-03-08 11:42:26">2026-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Python/Python/" title="Python">Python</a><time datetime="2023-11-19T13:58:00.000Z" title="Created 2023-11-19 21:58:00">2023-11-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By QuZheng</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

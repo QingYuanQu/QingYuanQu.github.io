@@ -1,0 +1,443 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>PySpark GraphFrames | 学习大数据</title><meta name="author" content="QuZheng"><meta name="copyright" content="QuZheng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Spark GraphFrames 官方文档：https:&#x2F;&#x2F;graphframes.github.io&#x2F;graphframes&#x2F;docs&#x2F;_site&#x2F;quick-start.html 源码：https:&#x2F;&#x2F;github.com&#x2F;graphframes&#x2F;graphframes 练习：https:&#x2F;&#x2F;docs.databricks.com&#x2F;_static&#x2F;notebooks&#x2F;graphframes-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PySpark GraphFrames">
+<meta property="og:url" content="https://www.studybigdata.com/Spark/PySpark/Spark_Python_GraphFrames/index.html">
+<meta property="og:site_name" content="学习大数据">
+<meta property="og:description" content="Spark GraphFrames 官方文档：https:&#x2F;&#x2F;graphframes.github.io&#x2F;graphframes&#x2F;docs&#x2F;_site&#x2F;quick-start.html 源码：https:&#x2F;&#x2F;github.com&#x2F;graphframes&#x2F;graphframes 练习：https:&#x2F;&#x2F;docs.databricks.com&#x2F;_static&#x2F;notebooks&#x2F;graphframes-">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.studybigdata.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2022-03-23T07:55:26.000Z">
+<meta property="article:modified_time" content="2023-06-08T00:30:39.658Z">
+<meta property="article:author" content="QuZheng">
+<meta property="article:tag" content="PySpark">
+<meta property="article:tag" content="Spark GraphFrames">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.studybigdata.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PySpark GraphFrames",
+  "url": "https://www.studybigdata.com/Spark/PySpark/Spark_Python_GraphFrames/",
+  "image": "https://www.studybigdata.com/img/butterfly-icon.png",
+  "datePublished": "2022-03-23T07:55:26.000Z",
+  "dateModified": "2023-06-08T00:30:39.658Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "QuZheng",
+      "url": "https://www.studybigdata.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.studybigdata.com/Spark/PySpark/Spark_Python_GraphFrames/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'PySpark GraphFrames',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">学习大数据</span></a><a class="nav-page-title" href="/"><span class="site-name">PySpark GraphFrames</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">PySpark GraphFrames</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-03-23T07:55:26.000Z" title="Created 2022-03-23 15:55:26">2022-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-06-08T00:30:39.658Z" title="Updated 2023-06-08 08:30:39">2023-06-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/PySpark/">PySpark</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Spark-GraphFrames"><a href="#Spark-GraphFrames" class="headerlink" title="Spark GraphFrames"></a>Spark GraphFrames</h1><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://graphframes.github.io/graphframes/docs/_site/quick-start.html">https://graphframes.github.io/graphframes/docs/_site/quick-start.html</a></p>
+<p>源码：<a target="_blank" rel="noopener" href="https://github.com/graphframes/graphframes">https://github.com/graphframes/graphframes</a></p>
+<p>练习：<a target="_blank" rel="noopener" href="https://docs.databricks.com/_static/notebooks/graphframes-user-guide-py.html">https://docs.databricks.com/_static/notebooks/graphframes-user-guide-py.html</a></p>
+</blockquote>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><h5 id="Pip安装graphframes库"><a href="#Pip安装graphframes库" class="headerlink" title="Pip安装graphframes库"></a>Pip安装graphframes库</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(python37) PS C:\Users\Qingyuan_Qu&gt; pip3 install graphframes</span><br></pre></td></tr></table></figure>
+
+<h5 id="Java依赖包"><a href="#Java依赖包" class="headerlink" title="Java依赖包"></a>Java依赖包</h5><ul>
+<li>在线下载</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">默认会下载到用户目录的`.ivy`文件夹内。</span></span><br><span class="line">(python37) PS C:\Users\Qingyuan_Qu&gt; pyspark --packages graphframes:graphframes:0.8.2-spark2.4-s_2.11</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>spark-packages.org</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://spark-packages.org/package/graphframes/graphframes</span><br></pre></td></tr></table></figure>
+
+<p>下载完，移动到<code>$SPARK_HOME/jars</code>文件夹内。</p>
+<h3 id="初始化环境"><a href="#初始化环境" class="headerlink" title="初始化环境"></a>初始化环境</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> networkx <span class="keyword">as</span> nx</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line"><span class="keyword">from</span> graphframes <span class="keyword">import</span> GraphFrame</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spark = SparkSession.builder.appName(<span class="string">&quot;hello graphframes&quot;</span>).master(<span class="string">&#x27;local[*]&#x27;</span>).getOrCreate()</span><br></pre></td></tr></table></figure>
+
+<pre><code>23/06/08 07:10:14 WARN SparkContext: Another SparkContext is being constructed (or threw an exception in its constructor).  This may indicate an error, since only one SparkContext may be running in this JVM (see SPARK-2243). The other SparkContext was created at:
+org.apache.spark.api.java.JavaSparkContext.&lt;init&gt;(JavaSparkContext.scala:58)
+sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:247)
+py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+py4j.Gateway.invoke(Gateway.java:238)
+py4j.commands.ConstructorCommand.invokeConstructor(ConstructorCommand.java:80)
+py4j.commands.ConstructorCommand.execute(ConstructorCommand.java:69)
+py4j.GatewayConnection.run(GatewayConnection.java:238)
+java.lang.Thread.run(Thread.java:748)
+</code></pre>
+<h3 id="图的构造"><a href="#图的构造" class="headerlink" title="图的构造"></a>图的构造</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">vertices = spark.createDataFrame([</span><br><span class="line"> (<span class="string">&quot;a&quot;</span>, <span class="string">&quot;Alice&quot;</span>, <span class="number">34</span>),</span><br><span class="line"> (<span class="string">&quot;b&quot;</span>, <span class="string">&quot;Bob&quot;</span>, <span class="number">36</span>),</span><br><span class="line"> (<span class="string">&quot;c&quot;</span>, <span class="string">&quot;Charlie&quot;</span>, <span class="number">30</span>),</span><br><span class="line"> (<span class="string">&quot;d&quot;</span>, <span class="string">&quot;David&quot;</span>, <span class="number">29</span>),</span><br><span class="line"> (<span class="string">&quot;e&quot;</span>, <span class="string">&quot;Esther&quot;</span>, <span class="number">32</span>),</span><br><span class="line"> (<span class="string">&quot;f&quot;</span>, <span class="string">&quot;Fanny&quot;</span>, <span class="number">36</span>),</span><br><span class="line"> (<span class="string">&quot;g&quot;</span>, <span class="string">&quot;Gabby&quot;</span>, <span class="number">60</span>)], [<span class="string">&quot;id&quot;</span>, <span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>])</span><br><span class="line"></span><br><span class="line">edges = spark.createDataFrame([</span><br><span class="line"> (<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;friend&quot;</span>),</span><br><span class="line"> (<span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;follow&quot;</span>),</span><br><span class="line"> (<span class="string">&quot;c&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;follow&quot;</span>),</span><br><span class="line"> (<span class="string">&quot;f&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;follow&quot;</span>),</span><br><span class="line"> (<span class="string">&quot;e&quot;</span>, <span class="string">&quot;f&quot;</span>, <span class="string">&quot;follow&quot;</span>),</span><br><span class="line"> (<span class="string">&quot;e&quot;</span>, <span class="string">&quot;d&quot;</span>, <span class="string">&quot;friend&quot;</span>),</span><br><span class="line"><span class="comment"># (&quot;e&quot;, &quot;c&quot;, &quot;friend&quot;),</span></span><br><span class="line"> (<span class="string">&quot;d&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;friend&quot;</span>),</span><br><span class="line"> (<span class="string">&quot;a&quot;</span>, <span class="string">&quot;e&quot;</span>, <span class="string">&quot;friend&quot;</span>)</span><br><span class="line">], [<span class="string">&quot;src&quot;</span>, <span class="string">&quot;dst&quot;</span>, <span class="string">&quot;relationship&quot;</span>])</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g=GraphFrame(vertices,edges)</span><br><span class="line"><span class="built_in">print</span>(g)</span><br></pre></td></tr></table></figure>
+
+<pre><code>GraphFrame(v:[id: string, name: string ... 1 more field], e:[src: string, dst: string ... 1 more field])
+</code></pre>
+<h3 id="图的保存"><a href="#图的保存" class="headerlink" title="图的保存"></a>图的保存</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">g.vertices.write.parquet(<span class="string">&quot;file:///home/zhangsan/graph/vertices&quot;</span>)</span><br><span class="line">g.edges.write.parquet(<span class="string">&quot;file:///home/zhangsan/graph/edges&quot;</span>)</span><br><span class="line"></span><br><span class="line">v = spark.read.parquet(<span class="string">&quot;file:///home/zhangsan/graph/vertices&quot;</span>)</span><br><span class="line">e = spark.read.parquet(<span class="string">&quot;file:///home/zhangsan/graph/edges&quot;</span>)</span><br><span class="line">g = GraphFrame(v,e)</span><br><span class="line"></span><br><span class="line">g.vertices.show()</span><br><span class="line">g.edges.show()</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="图的展示"><a href="#图的展示" class="headerlink" title="图的展示"></a>图的展示</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 图展示</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">plot_graph</span>(<span class="params">es</span>):</span><br><span class="line">    g = nx.DiGraph()</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> es.select(<span class="string">&#x27;src&#x27;</span>,<span class="string">&#x27;dst&#x27;</span>).collect():</span><br><span class="line">        g.add_edge(row[<span class="string">&#x27;src&#x27;</span>],row[<span class="string">&#x27;dst&#x27;</span>])</span><br><span class="line"></span><br><span class="line">    nx.draw(g, with_labels=<span class="literal">True</span>, node_color=<span class="string">&#x27;yellow&#x27;</span>)</span><br><span class="line">plot_graph(g.edges)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<p>​<br><img src="/img/Spark_Python_GraphFrames/output_6_0.png" alt="png"><br>​    </p>
+<h3 id="度-Degree"><a href="#度-Degree" class="headerlink" title="度(Degree)"></a>度(Degree)</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">g.vertices.show()</span><br><span class="line">g.edges.show()</span><br><span class="line">g.degrees.show()</span><br><span class="line">g.inDegrees.show()</span><br><span class="line">g.outDegrees.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>+---+-------+---+
+| id|   name|age|
++---+-------+---+
+|  a|  Alice| 34|
+|  b|    Bob| 36|
+|  c|Charlie| 30|
+|  d|  David| 29|
+|  e| Esther| 32|
+|  f|  Fanny| 36|
+|  g|  Gabby| 60|
++---+-------+---+
+
++---+---+------------+
+|src|dst|relationship|
++---+---+------------+
+|  a|  b|      friend|
+|  b|  c|      follow|
+|  c|  b|      follow|
+|  f|  c|      follow|
+|  e|  f|      follow|
+|  e|  d|      friend|
+|  d|  a|      friend|
+|  a|  e|      friend|
++---+---+------------+
+
++---+------+
+| id|degree|
++---+------+
+|  f|     2|
+|  e|     3|
+|  d|     2|
+|  c|     3|
+|  b|     3|
+|  a|     3|
++---+------+
+
++---+--------+
+| id|inDegree|
++---+--------+
+|  f|       1|
+|  e|       1|
+|  d|       1|
+|  c|       2|
+|  b|       2|
+|  a|       1|
++---+--------+
+
++---+---------+
+| id|outDegree|
++---+---------+
+|  f|        1|
+|  e|        2|
+|  d|        1|
+|  c|        1|
+|  b|        1|
+|  a|        2|
++---+---------+
+</code></pre>
+<h3 id="模式查找"><a href="#模式查找" class="headerlink" title="模式查找"></a>模式查找</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">help</span>(GraphFrame.find)</span><br></pre></td></tr></table></figure>
+
+<pre><code>Help on function find in module graphframes.graphframe:
+
+find(self, pattern)
+    Motif finding.
+    
+    See Scala documentation for more details.
+    
+    :param pattern:  String describing the motif to search for.
+    :return:  DataFrame with one Row for each instance of the motif found
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g.find(<span class="string">&#x27;(x)-[e]-&gt;(y);(y)-[e2]-&gt;(z)&#x27;</span>).show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>+----------------+--------------+----------------+--------------+----------------+
+|               x|             e|               y|            e2|               z|
++----------------+--------------+----------------+--------------+----------------+
+|  [a, Alice, 34]|[a, e, friend]| [e, Esther, 32]|[e, f, follow]|  [f, Fanny, 36]|
+|  [d, David, 29]|[d, a, friend]|  [a, Alice, 34]|[a, e, friend]| [e, Esther, 32]|
+|  [a, Alice, 34]|[a, e, friend]| [e, Esther, 32]|[e, d, friend]|  [d, David, 29]|
+| [e, Esther, 32]|[e, f, follow]|  [f, Fanny, 36]|[f, c, follow]|[c, Charlie, 30]|
+|[c, Charlie, 30]|[c, b, follow]|    [b, Bob, 36]|[b, c, follow]|[c, Charlie, 30]|
+|  [a, Alice, 34]|[a, b, friend]|    [b, Bob, 36]|[b, c, follow]|[c, Charlie, 30]|
+|  [f, Fanny, 36]|[f, c, follow]|[c, Charlie, 30]|[c, b, follow]|    [b, Bob, 36]|
+|    [b, Bob, 36]|[b, c, follow]|[c, Charlie, 30]|[c, b, follow]|    [b, Bob, 36]|
+|  [d, David, 29]|[d, a, friend]|  [a, Alice, 34]|[a, b, friend]|    [b, Bob, 36]|
+| [e, Esther, 32]|[e, d, friend]|  [d, David, 29]|[d, a, friend]|  [a, Alice, 34]|
++----------------+--------------+----------------+--------------+----------------+
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">g.find(<span class="string">&#x27;(x)-[e]-&gt;(y);(x)-[e2]-&gt;(z)&#x27;</span>).show()</span><br><span class="line"></span><br><span class="line">motifs = g.find(<span class="string">&#x27;(x)-[e1]-&gt;(y);(y)-[]-&gt;(x)&#x27;</span>)</span><br><span class="line">motifs.show()</span><br><span class="line">motifs.<span class="built_in">filter</span>(<span class="string">&quot;y.age&gt;30&quot;</span>).show()</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="广度优先搜索BFS"><a href="#广度优先搜索BFS" class="headerlink" title="广度优先搜索BFS"></a>广度优先搜索BFS</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">help</span>(GraphFrame.bfs)</span><br></pre></td></tr></table></figure>
+
+<pre><code>Help on function bfs in module graphframes.graphframe:
+
+bfs(self, fromExpr, toExpr, edgeFilter=None, maxPathLength=10)
+    Breadth-first search (BFS).
+    
+    See Scala documentation for more details.
+    
+    :return: DataFrame with one Row for each shortest path between matching vertices.
+</code></pre>
+<ul>
+<li>fromExpr: 通过表达式指定搜索起点  </li>
+<li>toExpr: 通过表达式指定搜索终点 </li>
+<li>edgeFilter: 需要忽略的边  </li>
+<li>maxPathLength: 路径的最大长度</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">paths = g.bfs(<span class="string">&quot;name=&#x27;Esther&#x27;&quot;</span>,<span class="string">&quot;name=&#x27;Bob&#x27;&quot;</span>)</span><br><span class="line">paths.show()</span><br></pre></td></tr></table></figure>
+
+<p>​                                                                                    </p>
+<pre><code>+---------------+--------------+--------------+--------------+----------------+--------------+------------+
+|           from|            e0|            v1|            e1|              v2|            e2|          to|
++---------------+--------------+--------------+--------------+----------------+--------------+------------+
+|[e, Esther, 32]|[e, f, follow]|[f, Fanny, 36]|[f, c, follow]|[c, Charlie, 30]|[c, b, follow]|[b, Bob, 36]|
+|[e, Esther, 32]|[e, d, friend]|[d, David, 29]|[d, a, friend]|  [a, Alice, 34]|[a, b, friend]|[b, Bob, 36]|
++---------------+--------------+--------------+--------------+----------------+--------------+------------+
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">paths = g.bfs(<span class="string">&quot;name=&#x27;Esther&#x27;&quot;</span>,<span class="string">&quot;name=&#x27;Bob&#x27;&quot;</span>,edgeFilter = <span class="string">&quot;relationship != &#x27;friend&#x27;&quot;</span>)</span><br><span class="line">paths.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>[Stage 1789:=======================================&gt;            (152 + 8) / 200]
+
++---------------+--------------+--------------+--------------+----------------+--------------+------------+
+|           from|            e0|            v1|            e1|              v2|            e2|          to|
++---------------+--------------+--------------+--------------+----------------+--------------+------------+
+|[e, Esther, 32]|[e, f, follow]|[f, Fanny, 36]|[f, c, follow]|[c, Charlie, 30]|[c, b, follow]|[b, Bob, 36]|
++---------------+--------------+--------------+--------------+----------------+--------------+------------+
+</code></pre>
+<p>​                                                                                    </p>
+<h3 id="最短路径（Dijkstra）"><a href="#最短路径（Dijkstra）" class="headerlink" title="最短路径（Dijkstra）"></a>最短路径（Dijkstra）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">help</span>(GraphFrame.shortestPaths)</span><br></pre></td></tr></table></figure>
+
+<pre><code>Help on function shortestPaths in module graphframes.graphframe:
+
+shortestPaths(self, landmarks)
+    Runs the shortest path algorithm from a set of landmark vertices in the graph.
+    
+    See Scala documentation for more details.
+    
+    :param landmarks: a set of one or more landmarks
+    :return: DataFrame with new vertices column &quot;distances&quot;
+</code></pre>
+<p>忽略边的权重，返回所有顶点到目标顶点的最短距离，不会返回完整的路径。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">paths = g.shortestPaths(landmarks=[<span class="string">&quot;a&quot;</span>,<span class="string">&quot;c&quot;</span>])</span><br><span class="line">paths.show()</span><br></pre></td></tr></table></figure>
+
+<p>​                                                                                    </p>
+<pre><code>+---+-------+---+----------------+
+| id|   name|age|       distances|
++---+-------+---+----------------+
+|  g|  Gabby| 60|              []|
+|  b|    Bob| 36|        [c -&gt; 1]|
+|  e| Esther| 32|[c -&gt; 2, a -&gt; 2]|
+|  a|  Alice| 34|[a -&gt; 0, c -&gt; 2]|
+|  f|  Fanny| 36|        [c -&gt; 1]|
+|  d|  David| 29|[a -&gt; 1, c -&gt; 3]|
+|  c|Charlie| 30|        [c -&gt; 0]|
++---+-------+---+----------------+
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">paths = g.shortestPaths(landmarks=[<span class="string">&quot;a&quot;</span>,<span class="string">&quot;d&quot;</span>])</span><br><span class="line">paths.show()</span><br><span class="line">paths.<span class="built_in">filter</span>(<span class="string">&quot;id=&#x27;a&#x27;&quot;</span>).show()</span><br><span class="line"><span class="built_in">print</span>(paths.<span class="built_in">filter</span>(<span class="string">&quot;id=&#x27;a&#x27;&quot;</span>).rdd.<span class="built_in">map</span>(<span class="keyword">lambda</span> x:x[<span class="number">3</span>][<span class="string">&#x27;d&#x27;</span>]).collect())</span><br><span class="line"></span><br><span class="line">paths = g.shortestPaths(landmarks=[<span class="string">&quot;a&quot;</span>,<span class="string">&quot;f&quot;</span>])</span><br><span class="line">paths.show()</span><br><span class="line">paths.<span class="built_in">filter</span>(<span class="string">&quot;id=&#x27;a&#x27;&quot;</span>).show()</span><br><span class="line"><span class="built_in">print</span>(paths.<span class="built_in">filter</span>(<span class="string">&quot;id=&#x27;a&#x27;&quot;</span>).rdd.<span class="built_in">map</span>(<span class="keyword">lambda</span> x:x[<span class="number">3</span>][<span class="string">&#x27;f&#x27;</span>]).collect())</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="三角形计数"><a href="#三角形计数" class="headerlink" title="三角形计数"></a>三角形计数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g.triangleCount().show()</span><br></pre></td></tr></table></figure>
+
+<p>​                                                                                    </p>
+<pre><code>+-----+---+-------+---+
+|count| id|   name|age|
++-----+---+-------+---+
+|    0|  g|  Gabby| 60|
+|    0|  f|  Fanny| 36|
+|    1|  e| Esther| 32|
+|    1|  d|  David| 29|
+|    0|  c|Charlie| 30|
+|    0|  b|    Bob| 36|
+|    1|  a|  Alice| 34|
++-----+---+-------+---+
+</code></pre>
+<h3 id="连通分量"><a href="#连通分量" class="headerlink" title="连通分量"></a>连通分量</h3><h4 id="连通分量-无向图"><a href="#连通分量-无向图" class="headerlink" title="连通分量(无向图)"></a>连通分量(无向图)</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sc = spark.sparkContext</span><br><span class="line">sc.setCheckpointDir(<span class="string">&quot;./&quot;</span>)</span><br><span class="line">g.connectedComponents().show()</span><br></pre></td></tr></table></figure>
+
+<p>​                                                                                    </p>
+<pre><code>+---+-------+---+------------+
+| id|   name|age|   component|
++---+-------+---+------------+
+|  a|  Alice| 34|412316860416|
+|  b|    Bob| 36|412316860416|
+|  c|Charlie| 30|412316860416|
+|  d|  David| 29|412316860416|
+|  e| Esther| 32|412316860416|
+|  f|  Fanny| 36|412316860416|
+|  g|  Gabby| 60|146028888064|
++---+-------+---+------------+
+</code></pre>
+<h4 id="强连通分量-有向图"><a href="#强连通分量-有向图" class="headerlink" title="强连通分量(有向图)"></a>强连通分量(有向图)</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g.stronglyConnectedComponents(maxIter=<span class="number">10</span>).show()</span><br></pre></td></tr></table></figure>
+
+<p>​                                                                                    </p>
+<pre><code>+---+-------+---+-------------+
+| id|   name|age|    component|
++---+-------+---+-------------+
+|  g|  Gabby| 60| 146028888064|
+|  b|    Bob| 36|1047972020224|
+|  e| Esther| 32| 670014898176|
+|  a|  Alice| 34| 670014898176|
+|  f|  Fanny| 36| 412316860416|
+|  d|  David| 29| 670014898176|
+|  c|Charlie| 30|1047972020224|
++---+-------+---+-------------+
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plot_graph(g.edges)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+<p>​<br><img src="/img/Spark_Python_GraphFrames/output_28_0.png" alt="png"><br>​    </p>
+<h3 id="PageRank"><a href="#PageRank" class="headerlink" title="PageRank"></a>PageRank</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result = g.pageRank(resetProbability=<span class="number">0.15</span>,maxIter=<span class="number">10</span>)</span><br><span class="line">result.vertices.show()</span><br></pre></td></tr></table></figure>
+
+<pre><code>+---+-------+---+-------------------+
+| id|   name|age|           pagerank|
++---+-------+---+-------------------+
+|  g|  Gabby| 60|0.17073170731707318|
+|  b|    Bob| 36| 2.7025217677349773|
+|  e| Esther| 32| 0.3613490987992571|
+|  a|  Alice| 34| 0.4485115093698443|
+|  f|  Fanny| 36|0.32504910549694244|
+|  d|  David| 29|0.32504910549694244|
+|  c|Charlie| 30| 2.6667877057849627|
++---+-------+---+-------------------+
+</code></pre>
+<h3 id="Google-PageRank"><a href="#Google-PageRank" class="headerlink" title="Google PageRank"></a>Google PageRank</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Google Web PageRank</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># filePath = &quot;file:///mnt/d/PycharmProjects/pythonProject/spark_graphframes/web-Google.txt&quot;</span></span><br><span class="line">filePath = <span class="string">r&quot;D:\PycharmProjects\pythonProject\data\web-Google.txt&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">schema = StructType([StructField(<span class="string">&#x27;src&#x27;</span>, LongType(), <span class="literal">True</span>), StructField(<span class="string">&#x27;dst&#x27;</span>, LongType(), <span class="literal">True</span>)])</span><br><span class="line">edges = spark.read.load(filePath, <span class="built_in">format</span>=<span class="string">&#x27;csv&#x27;</span>, delimiter=<span class="string">&#x27;\t&#x27;</span>, schema=schema, mode=<span class="string">&#x27;DROPMALFORMED&#x27;</span>)</span><br><span class="line">edges.cache()</span><br><span class="line"></span><br><span class="line">srcVertices = edges.select(edges.src)</span><br><span class="line">destVertices = edges.select(edges.dst)</span><br><span class="line"></span><br><span class="line">vertices = srcVertices.union(destVertices).distinct().withColumnRenamed(<span class="string">&#x27;src&#x27;</span>, <span class="string">&#x27;id&#x27;</span>)</span><br><span class="line">vertices.show()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> graphframes <span class="keyword">import</span> GraphFrame</span><br><span class="line"></span><br><span class="line">g = GraphFrame(vertices, edges)</span><br><span class="line">rank = g.pageRank(resetProbability=<span class="number">0.15</span>, maxIter=<span class="number">5</span>)</span><br><span class="line">rank.vertices.show()</span><br><span class="line">rank.edges.show()</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com">QuZheng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com/Spark/PySpark/Spark_Python_GraphFrames/">https://www.studybigdata.com/Spark/PySpark/Spark_Python_GraphFrames/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/PySpark/">PySpark</a><a class="post-meta__tags" href="/tags/Spark-GraphFrames/">Spark GraphFrames</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/Spark/PySpark/Spark_Python_Streaming/" title="PySpark Streaming"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">PySpark Streaming</div></div><div class="info-2"><div class="info-item-1">Hello World12345678910111213from pyspark import SparkConffrom pyspark import SparkContextfrom pyspark.streaming import StreamingContextif __name__ == &#x27;__main__&#x27;:    conf = SparkConf().setMaster(&quot;spark://node0:7077&quot;).setAppName(&quot;HelloWorld&quot;)    sc = SparkContext(conf=conf)    ssc = StreamingContext(sc, 1)    stream = ssc.socketTextStream(&quot;localhost&quot;, 9999)    stream.pprint()    ssc.start()    ssc.awaitTermination()  Data1234567891011121314151617181920212...</div></div></div></a><a class="pagination-related" href="/Spark/PySpark/Spark_Python_QA/" title="Spark Python QA"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Spark Python QA</div></div><div class="info-2"><div class="info-item-1">Spark Python QAQ: PySpark: java.lang.OutofMemoryError: Java heap space1PySpark: java.lang.OutofMemoryError: Java heap space  A1spark_conf.setAppName(&quot;recommend&quot;).setMaster(&quot;local[*]&quot;).set(&#x27;spark.executor.memory&#x27;, &#x27;12g&#x27;).set(&#x27;spark.driver.memory&#x27;, &#x27;14g&#x27;)     Q:  Please install psutil to have better support with spilling1UserWarning: Please install psutil to have better support with spilling  A1pip install psutil     Q: {0}.{1} does no...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/Spark/PySpark/Spark_Python_DataFrame/" title="PySpark DataFrame与Spark SQL"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-23</div><div class="info-item-2">PySpark DataFrame与Spark SQL</div></div><div class="info-2"><div class="info-item-1">类间关系123456789101112131415graph LRpyspark[pyspark] --&gt; conf[conf] --&gt; SparkConf(SparkConf)pyspark[pyspark] --&gt; context[context] --&gt; SparkContext(SparkContext)pyspark[pyspark]--&gt;sql[sql]sql[sql]--&gt; context1[context] context1[context] --&gt; SQLContext(SQLContext)context1[context] --&gt; HiveContext(HiveContext)sql[sql] --&gt; session[session] --&gt; SparkSession(SparkSession)pyspark[pyspark]--&gt;streaming[streaming]streaming[streaming]--&gt; context2[context] context2[context...</div></div></div></a><a class="pagination-related" href="/Spark/PySpark/Spark/" title="Spark"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-14</div><div class="info-item-2">Spark</div></div><div class="info-2"><div class="info-item-1">Spark        Term Meaning    Application User program built on Spark. Consists of a driver program and executors on the cluster.   Application jar A jar containing the user’s Spark application. In some cases users will want to create an “uber jar” containing their application along with its dependencies. The user’s jar should never include Hadoop or Spark libraries, however, these will be added at runtime.   Driver The process running the main() function of the application and creating the Sp...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">QuZheng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">118</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">84</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">26</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spark-GraphFrames"><span class="toc-number">1.</span> <span class="toc-text">Spark GraphFrames</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">安装</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Pip%E5%AE%89%E8%A3%85graphframes%E5%BA%93"><span class="toc-number">1.1.1.</span> <span class="toc-text">Pip安装graphframes库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Java%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="toc-number">1.1.2.</span> <span class="toc-text">Java依赖包</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E7%8E%AF%E5%A2%83"><span class="toc-number">1.2.</span> <span class="toc-text">初始化环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E7%9A%84%E6%9E%84%E9%80%A0"><span class="toc-number">1.3.</span> <span class="toc-text">图的构造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E7%9A%84%E4%BF%9D%E5%AD%98"><span class="toc-number">1.4.</span> <span class="toc-text">图的保存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E7%9A%84%E5%B1%95%E7%A4%BA"><span class="toc-number">1.5.</span> <span class="toc-text">图的展示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%A6-Degree"><span class="toc-number">1.6.</span> <span class="toc-text">度(Degree)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%BC%8F%E6%9F%A5%E6%89%BE"><span class="toc-number">1.7.</span> <span class="toc-text">模式查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2BFS"><span class="toc-number">1.8.</span> <span class="toc-text">广度优先搜索BFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%EF%BC%88Dijkstra%EF%BC%89"><span class="toc-number">1.9.</span> <span class="toc-text">最短路径（Dijkstra）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E8%A7%92%E5%BD%A2%E8%AE%A1%E6%95%B0"><span class="toc-number">1.10.</span> <span class="toc-text">三角形计数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F"><span class="toc-number">1.11.</span> <span class="toc-text">连通分量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F-%E6%97%A0%E5%90%91%E5%9B%BE"><span class="toc-number">1.11.1.</span> <span class="toc-text">连通分量(无向图)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F-%E6%9C%89%E5%90%91%E5%9B%BE"><span class="toc-number">1.11.2.</span> <span class="toc-text">强连通分量(有向图)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PageRank"><span class="toc-number">1.12.</span> <span class="toc-text">PageRank</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Google-PageRank"><span class="toc-number">1.13.</span> <span class="toc-text">Google PageRank</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Kafka/" title="Kafka">Kafka</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-02-environment/" title="第2章 数仓基础环境搭建">第2章 数仓基础环境搭建</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-01-introduction/" title="第1章 教育大数据分析项目介绍">第1章 教育大数据分析项目介绍</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Linux/Linux_SSH_Passwordless_login/" title="SSH无密登录配置">SSH无密登录配置</a><time datetime="2026-03-08T03:42:26.000Z" title="Created 2026-03-08 11:42:26">2026-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Python/Python/" title="Python">Python</a><time datetime="2023-11-19T13:58:00.000Z" title="Created 2023-11-19 21:58:00">2023-11-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By QuZheng</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

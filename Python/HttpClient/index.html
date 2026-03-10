@@ -1,0 +1,421 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Http Clients | 学习大数据</title><meta name="author" content="QuZheng"><meta name="copyright" content="QuZheng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="字节与字符串单位换算1 byte &#x3D; 8 bits 字符串转字节1b &#x3D; &quot;abc张三&quot;.encode(&quot;utf-8&quot;)  字节转字符串12b.decode(&quot;utf-8&quot;)# &#x27;abc张三&#x27;  Web通信原理 Http请求方法   方法 描述    GET 请求指定的页面信息，并返回实体主体   POST">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Http Clients">
+<meta property="og:url" content="https://www.studybigdata.com/Python/HttpClient/index.html">
+<meta property="og:site_name" content="学习大数据">
+<meta property="og:description" content="字节与字符串单位换算1 byte &#x3D; 8 bits 字符串转字节1b &#x3D; &quot;abc张三&quot;.encode(&quot;utf-8&quot;)  字节转字符串12b.decode(&quot;utf-8&quot;)# &#x27;abc张三&#x27;  Web通信原理 Http请求方法   方法 描述    GET 请求指定的页面信息，并返回实体主体   POST">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.studybigdata.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2023-06-11T13:02:00.000Z">
+<meta property="article:modified_time" content="2023-07-20T13:24:36.124Z">
+<meta property="article:author" content="QuZheng">
+<meta property="article:tag" content="Requests">
+<meta property="article:tag" content="urllib">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.studybigdata.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Http Clients",
+  "url": "https://www.studybigdata.com/Python/HttpClient/",
+  "image": "https://www.studybigdata.com/img/butterfly-icon.png",
+  "datePublished": "2023-06-11T13:02:00.000Z",
+  "dateModified": "2023-07-20T13:24:36.124Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "QuZheng",
+      "url": "https://www.studybigdata.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.studybigdata.com/Python/HttpClient/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Http Clients',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">学习大数据</span></a><a class="nav-page-title" href="/"><span class="site-name">Http Clients</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Http Clients</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-06-11T13:02:00.000Z" title="Created 2023-06-11 21:02:00">2023-06-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-07-20T13:24:36.124Z" title="Updated 2023-07-20 21:24:36">2023-07-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Requests/">Requests</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="字节与字符串"><a href="#字节与字符串" class="headerlink" title="字节与字符串"></a>字节与字符串</h1><h5 id="单位换算"><a href="#单位换算" class="headerlink" title="单位换算"></a>单位换算</h5><p>1 byte &#x3D; 8 bits</p>
+<h5 id="字符串转字节"><a href="#字符串转字节" class="headerlink" title="字符串转字节"></a>字符串转字节</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b = <span class="string">&quot;abc张三&quot;</span>.encode(<span class="string">&quot;utf-8&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h5 id="字节转字符串"><a href="#字节转字符串" class="headerlink" title="字节转字符串"></a>字节转字符串</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">b.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"><span class="comment"># &#x27;abc张三&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Web通信原理"><a href="#Web通信原理" class="headerlink" title="Web通信原理"></a>Web通信原理</h1><p><img src="/img/HttpClient/image-20230611201102563.png" alt="image-20230611201102563"></p>
+<h4 id="Http请求方法"><a href="#Http请求方法" class="headerlink" title="Http请求方法"></a>Http请求方法</h4><table>
+<thead>
+<tr>
+<th><strong>方法</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>GET</strong></td>
+<td>请求指定的页面信息，并返回实体主体</td>
+</tr>
+<tr>
+<td><strong>POST</strong></td>
+<td>向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST请求可能会导致新的资源的建立和&#x2F;或已有资源的修改</td>
+</tr>
+<tr>
+<td><strong>HEAD</strong></td>
+<td>类似于GET请求，只不过返回的响应中没有具体的内容，用于获取报头</td>
+</tr>
+<tr>
+<td><strong>PUT</strong></td>
+<td>从客户端向服务器传送的数据取代指定的文档的内容</td>
+</tr>
+<tr>
+<td><strong>DELETE</strong></td>
+<td>请求服务器删除指定的页面</td>
+</tr>
+<tr>
+<td><strong>OPTIONS</strong></td>
+<td>允许客户端查看服务器的性能</td>
+</tr>
+</tbody></table>
+<h4 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h4><table>
+<thead>
+<tr>
+<th><strong>代码</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1*</strong>*</td>
+<td>信息，请求收到，继续处理</td>
+</tr>
+<tr>
+<td><strong>2*</strong>*</td>
+<td>成功，行为被成功地接受、理解和采纳</td>
+</tr>
+<tr>
+<td><strong>3*</strong>*</td>
+<td>重定向，为了完成请求，必须进一步执行的动作</td>
+</tr>
+<tr>
+<td><strong>4*</strong>*</td>
+<td>客户端错误，请求包含语法错误或者请求无法实现</td>
+</tr>
+<tr>
+<td><strong>5*</strong>*</td>
+<td>服务器错误，服务器不能实现一种明显无效的请求</td>
+</tr>
+</tbody></table>
+<h1 id="urllib官方标准库"><a href="#urllib官方标准库" class="headerlink" title="urllib官方标准库"></a>urllib官方标准库</h1><table>
+<thead>
+<tr>
+<th><strong>模块名称</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>urllib.parse</strong></td>
+<td>该模块定义的功能分为两大类：URL解析和URL引用</td>
+</tr>
+<tr>
+<td><strong>urllib.request</strong></td>
+<td>该模块定义了打开URL（主要是HTTP）的方法和类，如身份验证、重定向、cookie等</td>
+</tr>
+<tr>
+<td><strong>urllib.error</strong></td>
+<td>该模块中主要包含异常类，基本的异常类是URLError</td>
+</tr>
+<tr>
+<td><strong>urllib.robotparser</strong></td>
+<td>该模块用于解析robots.txt文件</td>
+</tr>
+</tbody></table>
+<h3 id="导入-urllib"><a href="#导入-urllib" class="headerlink" title="导入 urllib"></a>导入 urllib</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib</span><br></pre></td></tr></table></figure>
+
+<h3 id="UrlParse模块"><a href="#UrlParse模块" class="headerlink" title="UrlParse模块"></a>UrlParse模块</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url = <span class="string">&quot;http://localhost:8080/servlet_api/Hello?username=zhangsan#body&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="UrlParse函数"><a href="#UrlParse函数" class="headerlink" title="UrlParse函数"></a>UrlParse函数</h4><p>urlparse() 函数可以将 URL 解析成 ParseResult 对象。对象中包含了六个元素，分别为协议（scheme） 、域名（netloc） 、路径（path） 、路径参数（params） 、查询参数（query） 、片段（fragment）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse</span><br><span class="line">parsed_result = urlparse(url)</span><br><span class="line">parsed_result</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>ParseResult(scheme=&#39;http&#39;, netloc=&#39;localhost:8080&#39;, path=&#39;/servlet_api/Hello&#39;, params=&#39;&#39;, query=&#39;username=zhangsan&#39;, fragment=&#39;body&#39;)
+</code></pre>
+<h4 id="UrlSplit函数"><a href="#UrlSplit函数" class="headerlink" title="UrlSplit函数"></a>UrlSplit函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlsplit</span><br><span class="line">split_result = urlsplit(url)</span><br><span class="line">split_result</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>SplitResult(scheme=&#39;http&#39;, netloc=&#39;localhost:8080&#39;, path=&#39;/servlet_api/Hello&#39;, query=&#39;username=zhangsan&#39;, fragment=&#39;body&#39;)
+</code></pre>
+<h4 id="UrlDeFrag函数"><a href="#UrlDeFrag函数" class="headerlink" title="UrlDeFrag函数"></a>UrlDeFrag函数</h4><p>urldefrag：如果url包含一个片段标识符，urldefrag()函数可以返回一个没有片段标识符的修改过的url，并且这个片段标识符作为单独的字符串。如果url中没有片段标识符，则返回未修改的url和一个空字符串。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urldefrag</span><br><span class="line">defrag_result = urldefrag (url)</span><br><span class="line">defrag_result</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>DefragResult(url=&#39;http://localhost:8080/servlet_api/Hello?username=zhangsan&#39;, fragment=&#39;body&#39;)
+</code></pre>
+<h4 id="UrlUnParse函数"><a href="#UrlUnParse函数" class="headerlink" title="UrlUnParse函数"></a>UrlUnParse函数</h4><p>urlunparse()接收一个列表的参数，组成一个完整的URL，而且列表的长度是有要求的，是必须六个参数以上，否则抛出异常</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlunparse</span><br><span class="line">url_compos = (<span class="string">&quot;http&quot;</span>,<span class="string">&quot;localhost:8080&quot;</span>, <span class="string">&quot;/servlet_api/Hello&quot;</span>,<span class="string">&quot;&quot;</span>,<span class="string">&quot;username=zhangsan&quot;</span>,<span class="string">&quot;head&quot;</span>)</span><br><span class="line">urlunparse(url_compos)</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:8080/servlet_api/Hello?username=zhangsan#head</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="UrlJoin函数"><a href="#UrlJoin函数" class="headerlink" title="UrlJoin函数"></a>UrlJoin函数</h4><p>连接两个参数的url，将第二个参数中缺的部分用第一个参数的补齐;  如果第二个有完整的路径，则以第二个为主</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urljoin</span><br><span class="line"><span class="built_in">print</span>(urljoin(<span class="string">&quot;https://movie.douban.com/&quot;</span>,<span class="string">&quot;index&quot;</span>))</span><br><span class="line"><span class="built_in">print</span>(urljoin(<span class="string">&quot;https://movie.douban.com/&quot;</span>,<span class="string">&quot;https://accounts.douban.com/login&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<pre><code>https://movie.douban.com/index
+https://accounts.douban.com/login
+</code></pre>
+<h4 id="urlencode函数"><a href="#urlencode函数" class="headerlink" title="urlencode函数"></a>urlencode函数</h4><h5 id="字典转请求参数"><a href="#字典转请求参数" class="headerlink" title="字典转请求参数"></a>字典转请求参数</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlencode</span><br><span class="line">requestParameters = &#123;<span class="string">&quot;username&quot;</span>:<span class="string">&quot;张三&quot;</span>,<span class="string">&quot;password&quot;</span>:<span class="string">&quot;123456&quot;</span>&#125;</span><br><span class="line">requestParametersEncode = urlencode(requestParameters,encoding=<span class="string">&quot;gbk&quot;</span>)</span><br><span class="line">requestParametersEncode</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>&#39;username=%D5%C5%C8%FD&amp;password=123456&#39;
+</code></pre>
+<h5 id="请求参数转字典"><a href="#请求参数转字典" class="headerlink" title="请求参数转字典"></a>请求参数转字典</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> parse_qs</span><br><span class="line">parse_qs(requestParametersEncode,encoding=<span class="string">&quot;gbk&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>{&#39;username&#39;: [&#39;张三&#39;], &#39;password&#39;: [&#39;123456&#39;]}
+</code></pre>
+<h3 id="Request模块"><a href="#Request模块" class="headerlink" title="Request模块"></a>Request模块</h3><h4 id="Get请求"><a href="#Get请求" class="headerlink" title="Get请求"></a>Get请求</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">response = urllib.request.urlopen(<span class="string">f&quot;http://localhost:8080/servlet_api/AboutUs&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(response.read().decode(<span class="string">&quot;utf-8&quot;</span>)) <span class="comment">#字节序列</span></span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;html&gt;
+&lt;head&gt;&lt;title&gt;关于我们&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;关于我们&lt;/h1&gt;
+&lt;p&gt;公司网址：www.studybigdata.cn&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>​    </p>
+<h4 id="Post请求"><a href="#Post请求" class="headerlink" title="Post请求"></a>Post请求</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.parse</span><br><span class="line"><span class="keyword">import</span> urllib.request</span><br><span class="line"></span><br><span class="line">requestParameters = &#123;<span class="string">&quot;username&quot;</span>:<span class="string">&quot;张三&quot;</span>,<span class="string">&quot;password&quot;</span>:<span class="string">&quot;123456&quot;</span>&#125;</span><br><span class="line">requestParametersBytesString = urllib.parse.urlencode(requestParameters) <span class="comment"># 将请求参数编码成字节字符串</span></span><br><span class="line">data = <span class="built_in">bytes</span>(requestParametersBytesString,encoding = <span class="string">&quot;utf-8&quot;</span>) <span class="comment"># 转成字节</span></span><br><span class="line">response = urllib.request.urlopen(<span class="string">&quot;http://localhost:8080/servlet_api/LogIn&quot;</span>, data=data)</span><br><span class="line">response.read().decode(<span class="string">&#x27;utf-8&#x27;</span>)<span class="comment">#读取服务器的响应的字节，转为字符串</span></span><br></pre></td></tr></table></figure>
+
+
+<pre><code>&#39;&lt;html&gt;\r\n&lt;head&gt;&lt;title&gt;首页&lt;/title&gt;&lt;/head&gt;\r\n&lt;body&gt;\r\n当前登录用户: 未登录\r\n&lt;/body&gt;\r\n&lt;/html&gt;\r\n&#39;
+</code></pre>
+<h1 id="Request"><a href="#Request" class="headerlink" title="Request"></a>Request</h1><h3 id="安装Requests库"><a href="#安装Requests库" class="headerlink" title="安装Requests库"></a>安装Requests库</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!pip install requests</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="导入Requests模块"><a href="#导入Requests模块" class="headerlink" title="导入Requests模块"></a>导入Requests模块</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br></pre></td></tr></table></figure>
+
+<h3 id="构造Request-Header"><a href="#构造Request-Header" class="headerlink" title="构造Request Header"></a>构造Request Header</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">headers = &#123;<span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Head请求"><a href="#Head请求" class="headerlink" title="Head请求"></a>Head请求</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">url = <span class="string">&quot;http://localhost:8080/servlet_api/AboutUs&quot;</span></span><br><span class="line">response = requests.head(<span class="string">&quot;http://localhost:8080/servlet_api/Hello&quot;</span>)</span><br><span class="line">response.content.decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> response.headers.items():</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br></pre></td></tr></table></figure>
+
+<pre><code>(&#39;Server&#39;, &#39;Apache-Coyote/1.1&#39;)
+(&#39;Content-Length&#39;, &#39;107&#39;)
+(&#39;Date&#39;, &#39;Sun, 11 Jun 2023 07:16:23 GMT&#39;)
+</code></pre>
+<h3 id="Get请求-1"><a href="#Get请求-1" class="headerlink" title="Get请求"></a>Get请求</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HelloURL = <span class="string">&quot;http://localhost:8080/servlet_api/Hello?username=zhangsan&quot;</span></span><br><span class="line">response = requests.get(HelloURL,headers=headers)</span><br><span class="line"><span class="comment">#以字节流形式打印网页源码</span></span><br><span class="line"><span class="built_in">print</span>(response.text)</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;html&gt;
+&lt;head&gt;&lt;title&gt;a servlet&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+Hello! zhangsan
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>​    </p>
+<h3 id="Post请求-1"><a href="#Post请求-1" class="headerlink" title="Post请求"></a>Post请求</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">req_param = &#123;<span class="string">&quot;username&quot;</span>:<span class="string">&quot;张三&quot;</span>,<span class="string">&quot;password&quot;</span>:<span class="string">&quot;123456&quot;</span>&#125;</span><br><span class="line">response = requests.post(<span class="string">&quot;http://localhost:8080/servlet_api/LogIn&quot;</span>,data=req_param)</span><br><span class="line"><span class="built_in">print</span>(response.text)</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;html&gt;
+&lt;head&gt;&lt;title&gt;首页&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+当前登录用户: 张三
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>​    </p>
+<h3 id="Put请求"><a href="#Put请求" class="headerlink" title="Put请求"></a>Put请求</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HelloURL = <span class="string">&quot;http://localhost:8080/servlet_api/Hello&quot;</span></span><br><span class="line">response = requests.put(HelloURL)</span><br><span class="line"><span class="built_in">print</span>(response.text)</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;html&gt;
+&lt;head&gt;&lt;title&gt;a servlet&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+您发送了一个Put请求! 
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>​    </p>
+<h3 id="Delete请求"><a href="#Delete请求" class="headerlink" title="Delete请求"></a>Delete请求</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">response = requests.delete(HelloURL)</span><br><span class="line"><span class="built_in">print</span>(response.text)</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;html&gt;
+&lt;head&gt;&lt;title&gt;a servlet&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+您发送了一个Put请求! 
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>​    </p>
+<h3 id="Options请求"><a href="#Options请求" class="headerlink" title="Options请求"></a>Options请求</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">response = requests.options(HelloURL)</span><br><span class="line"><span class="built_in">print</span>(response.text)</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;html&gt;
+&lt;head&gt;&lt;title&gt;a servlet&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+您发送了一个Put请求! 
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>​    </p>
+<h3 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">response = requests.get(<span class="string">&quot;http://localhost:8080/servlet_api/Index&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(response.url)</span><br><span class="line"><span class="built_in">print</span>(response.status_code)</span><br><span class="line"><span class="built_in">print</span>(response.headers)</span><br><span class="line"><span class="built_in">print</span>(response.encoding)</span><br><span class="line"><span class="built_in">print</span>(response.content)</span><br><span class="line"><span class="built_in">print</span>(response.text)</span><br><span class="line"><span class="built_in">print</span>(response.cookies)</span><br></pre></td></tr></table></figure>
+
+<pre><code>http://localhost:8080/servlet_api/Index
+200
+{&#39;Server&#39;: &#39;Apache-Coyote/1.1&#39;, &#39;Set-Cookie&#39;: &#39;JSESSIONID=44C6D212AE2468EE107B40E3B6109664; Path=/servlet_api/; HttpOnly&#39;, &#39;Content-Type&#39;: &#39;text/html;charset=utf-8&#39;, &#39;Content-Length&#39;: &#39;101&#39;, &#39;Date&#39;: &#39;Sun, 11 Jun 2023 07:41:13 GMT&#39;}
+utf-8
+b&#39;&lt;html&gt;\r\n&lt;head&gt;&lt;title&gt;\xe9\xa6\x96\xe9\xa1\xb5&lt;/title&gt;&lt;/head&gt;\r\n&lt;body&gt;\r\n\xe5\xbd\x93\xe5\x89\x8d\xe7\x99\xbb\xe5\xbd\x95\xe7\x94\xa8\xe6\x88\xb7: \xe6\x9c\xaa\xe7\x99\xbb\xe5\xbd\x95\r\n&lt;/body&gt;\r\n&lt;/html&gt;\r\n&#39;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;首页&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+当前登录用户: 未登录
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;RequestsCookieJar[&lt;Cookie JSESSIONID=44C6D212AE2468EE107B40E3B6109664 for localhost.local/servlet_api/&gt;]&gt;
+</code></pre>
+<h3 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">response = requests.get(<span class="string">&quot;http://localhost:8080/servlet_api/CookieTest&quot;</span>, headers=headers)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(response.content.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line"><span class="keyword">for</span> cookie <span class="keyword">in</span> response.cookies.keys():</span><br><span class="line">    <span class="built_in">print</span>(cookie + <span class="string">&quot;:&quot;</span>+ response.cookies.get(cookie))</span><br></pre></td></tr></table></figure>
+
+<pre><code>给你确定个广告ID：
+username:zhangsan
+advertisementId:999999
+</code></pre>
+<h4 id="自定义Cookie"><a href="#自定义Cookie" class="headerlink" title="自定义Cookie"></a>自定义Cookie</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#自定义cookies</span></span><br><span class="line">cookies = <span class="built_in">dict</span>(view=<span class="string">&quot;kouhong&quot;</span>,advertisementId=<span class="string">&quot;888888&quot;</span>)</span><br><span class="line">response = requests.post(<span class="string">&quot;http://localhost:8080/servlet_api/CookieTest&quot;</span>, headers=headers, cookies=cookies)</span><br><span class="line"><span class="built_in">print</span>(response.content.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<pre><code>小李啊，据我了解你喜欢买化妆品，我给你推荐个面膜！
+</code></pre>
+<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 发送POST请求(禁用重定向)</span></span><br><span class="line">response = requests.post(<span class="string">&quot;http://localhost:8080/servlet_api/LogIn&quot;</span>,data=req_param, allow_redirects=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在header中取出重定向地址</span></span><br><span class="line">redirect_url = response.headers[<span class="string">&#x27;Location&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span>(redirect_url)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 登录成功后，服务器为当前会话产生Session，返回给客户端一个cookie：JSESSIONID</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> response.cookies.items():</span><br><span class="line">    <span class="built_in">print</span>(item)</span><br></pre></td></tr></table></figure>
+
+<pre><code>http://localhost:8080/servlet_api/Index
+(&#39;JSESSIONID&#39;, &#39;7406A09B5D0A3CB79784FE002BA9E905&#39;)
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 再次请求服务器，服务器会根据cookie信息识别当前用户。    </span></span><br><span class="line">response = requests.get(redirect_url,cookies=response.cookies)</span><br><span class="line"><span class="built_in">print</span>(response.content.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;html&gt;
+&lt;head&gt;&lt;title&gt;首页&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+当前登录用户: 张三
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<blockquote>
+<p>实验接口源码：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/A-stranger/studybigdata/tree/master/javaee/servlet_api">https://github.com/A-stranger/studybigdata/tree/master/javaee/servlet_api</a></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com">QuZheng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com/Python/HttpClient/">https://www.studybigdata.com/Python/HttpClient/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Requests/">Requests</a><a class="post-meta__tags" href="/tags/urllib/">urllib</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/JavaEE/%E5%9F%BA%E4%BA%8ESpring%E7%9A%84%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/" title="基于Spring-MyBatis的学生信息管理系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">基于Spring-MyBatis的学生信息管理系统</div></div><div class="info-2"><div class="info-item-1">基于Spring-MyBatis的学生信息管理系统实训内容介绍 本章的项目学生信息管理系统，分为两个阶段。  第一阶段：完善 MVC 架构，使其更加符合实际项目的需求（还没有集成 Spring）。  第二阶段：在此基础上，将 Spring 技术集成进来。    内容概述 对 MVC 架构进行细分，可以将模型层细分为服务层、数据访问层和持久层三个部分 （如下图所示）。其中业务层之上是前台，业务层之下是后台（图中虚线所示）。    图1 MVC 框架结构的细分 在这个系统中，数据是用普通的 Java 类（也就是所谓的 POJO 类）封装的，但是， 前台数据和后台数据的内容（属性）有可能有少许差别，原因是后台的数据（属性）必须与表的结构完全一一对应， 前台的数据是与用户的需求对应的，对于初学者来说，前台和后台数据基本上是一一对应的，在实际项目中， 经常出现不一致的情况，例如用户数据有时会省略某些属性，有时会多出一些属性，或者需要作某些转换， 甚至可能包含另一张表的数据。  因此，就采用值对象（Value Object，VO）来封装前台数据，用 POJO 对象来封装后台数据。VO 和 P...</div></div></div></a><a class="pagination-related" href="/MySQL/MySQL_Install/" title="MySQL安装"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">MySQL安装</div></div><div class="info-2"><div class="info-item-1">5号楼机房电脑配置较低，推荐安装5.5； 个人电脑推荐安装最新版5.7或8.0。 MySQL5.5安装            安装完成。 当安装界面卡住时，在任务管理器中强制结束安装程序，卸载，重启电脑，重新安装。 MySQL5.7安装下载地址： https://dev.mysql.com/downloads/installer/                      </div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">QuZheng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">118</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">84</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">26</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%97%E8%8A%82%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.</span> <span class="toc-text">字节与字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8D%95%E4%BD%8D%E6%8D%A2%E7%AE%97"><span class="toc-number">1.1.</span> <span class="toc-text">单位换算</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E5%AD%97%E8%8A%82"><span class="toc-number">1.2.</span> <span class="toc-text">字符串转字节</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AD%97%E8%8A%82%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.3.</span> <span class="toc-text">字节转字符串</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Web%E9%80%9A%E4%BF%A1%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">Web通信原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Http%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.</span> <span class="toc-text">Http请求方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HTTP%E7%8A%B6%E6%80%81%E7%A0%81"><span class="toc-number">2.2.</span> <span class="toc-text">HTTP状态码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#urllib%E5%AE%98%E6%96%B9%E6%A0%87%E5%87%86%E5%BA%93"><span class="toc-number">3.</span> <span class="toc-text">urllib官方标准库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5-urllib"><span class="toc-number">3.1.</span> <span class="toc-text">导入 urllib</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UrlParse%E6%A8%A1%E5%9D%97"><span class="toc-number">3.2.</span> <span class="toc-text">UrlParse模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#UrlParse%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.1.</span> <span class="toc-text">UrlParse函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UrlSplit%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.2.</span> <span class="toc-text">UrlSplit函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UrlDeFrag%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.3.</span> <span class="toc-text">UrlDeFrag函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UrlUnParse%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.4.</span> <span class="toc-text">UrlUnParse函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#UrlJoin%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.5.</span> <span class="toc-text">UrlJoin函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#urlencode%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.6.</span> <span class="toc-text">urlencode函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AD%97%E5%85%B8%E8%BD%AC%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="toc-number">3.2.6.1.</span> <span class="toc-text">字典转请求参数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E8%BD%AC%E5%AD%97%E5%85%B8"><span class="toc-number">3.2.6.2.</span> <span class="toc-text">请求参数转字典</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Request%E6%A8%A1%E5%9D%97"><span class="toc-number">3.3.</span> <span class="toc-text">Request模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Get%E8%AF%B7%E6%B1%82"><span class="toc-number">3.3.1.</span> <span class="toc-text">Get请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Post%E8%AF%B7%E6%B1%82"><span class="toc-number">3.3.2.</span> <span class="toc-text">Post请求</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Request"><span class="toc-number">4.</span> <span class="toc-text">Request</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Requests%E5%BA%93"><span class="toc-number">4.1.</span> <span class="toc-text">安装Requests库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5Requests%E6%A8%A1%E5%9D%97"><span class="toc-number">4.2.</span> <span class="toc-text">导入Requests模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0Request-Header"><span class="toc-number">4.3.</span> <span class="toc-text">构造Request Header</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Head%E8%AF%B7%E6%B1%82"><span class="toc-number">4.4.</span> <span class="toc-text">Head请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Get%E8%AF%B7%E6%B1%82-1"><span class="toc-number">4.5.</span> <span class="toc-text">Get请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Post%E8%AF%B7%E6%B1%82-1"><span class="toc-number">4.6.</span> <span class="toc-text">Post请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Put%E8%AF%B7%E6%B1%82"><span class="toc-number">4.7.</span> <span class="toc-text">Put请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Delete%E8%AF%B7%E6%B1%82"><span class="toc-number">4.8.</span> <span class="toc-text">Delete请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Options%E8%AF%B7%E6%B1%82"><span class="toc-number">4.9.</span> <span class="toc-text">Options请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Response"><span class="toc-number">4.10.</span> <span class="toc-text">Response</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie"><span class="toc-number">4.11.</span> <span class="toc-text">Cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89Cookie"><span class="toc-number">4.11.1.</span> <span class="toc-text">自定义Cookie</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Session"><span class="toc-number">4.12.</span> <span class="toc-text">Session</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Kafka/" title="Kafka">Kafka</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-02-environment/" title="第2章 数仓基础环境搭建">第2章 数仓基础环境搭建</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-01-introduction/" title="第1章 教育大数据分析项目介绍">第1章 教育大数据分析项目介绍</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Linux/Linux_SSH_Passwordless_login/" title="SSH无密登录配置">SSH无密登录配置</a><time datetime="2026-03-08T03:42:26.000Z" title="Created 2026-03-08 11:42:26">2026-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Python/Python/" title="Python">Python</a><time datetime="2023-11-19T13:58:00.000Z" title="Created 2023-11-19 21:58:00">2023-11-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By QuZheng</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

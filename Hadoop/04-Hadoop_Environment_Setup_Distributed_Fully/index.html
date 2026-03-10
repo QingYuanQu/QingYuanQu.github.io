@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Hadoop环境部署-完全分布式 | 学习大数据</title><meta name="author" content="QuZheng"><meta name="copyright" content="QuZheng"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="完全分布式 官方文档 https:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r2.7.3&#x2F;hadoop-project-dist&#x2F;hadoop-common&#x2F;ClusterSetup.html https:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r3.1.3&#x2F;hadoop-project-dist&#x2F;hadoop-common&#x2F;ClusterSetup.html  节点克隆与免密登">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop环境部署-完全分布式">
+<meta property="og:url" content="https://www.studybigdata.com/Hadoop/04-Hadoop_Environment_Setup_Distributed_Fully/index.html">
+<meta property="og:site_name" content="学习大数据">
+<meta property="og:description" content="完全分布式 官方文档 https:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r2.7.3&#x2F;hadoop-project-dist&#x2F;hadoop-common&#x2F;ClusterSetup.html https:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;r3.1.3&#x2F;hadoop-project-dist&#x2F;hadoop-common&#x2F;ClusterSetup.html  节点克隆与免密登">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.studybigdata.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2023-01-15T07:55:26.000Z">
+<meta property="article:modified_time" content="2026-03-09T02:23:31.653Z">
+<meta property="article:author" content="QuZheng">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="完全分布式">
+<meta property="article:tag" content="环境搭建">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.studybigdata.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Hadoop环境部署-完全分布式",
+  "url": "https://www.studybigdata.com/Hadoop/04-Hadoop_Environment_Setup_Distributed_Fully/",
+  "image": "https://www.studybigdata.com/img/butterfly-icon.png",
+  "datePublished": "2023-01-15T07:55:26.000Z",
+  "dateModified": "2026-03-09T02:23:31.653Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "QuZheng",
+      "url": "https://www.studybigdata.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.studybigdata.com/Hadoop/04-Hadoop_Environment_Setup_Distributed_Fully/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Hadoop环境部署-完全分布式',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">学习大数据</span></a><a class="nav-page-title" href="/"><span class="site-name">Hadoop环境部署-完全分布式</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Hadoop环境部署-完全分布式</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-01-15T07:55:26.000Z" title="Created 2023-01-15 15:55:26">2023-01-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-03-09T02:23:31.653Z" title="Updated 2026-03-09 10:23:31">2026-03-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Hadoop/">Hadoop</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="完全分布式"><a href="#完全分布式" class="headerlink" title="完全分布式"></a><a href="#fully-distributed">完全分布式</a></h1><blockquote>
+<p><strong>官方文档</strong></p>
+<p><a target="_blank" rel="noopener" href="https://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/ClusterSetup.html">https://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/ClusterSetup.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://hadoop.apache.org/docs/r3.1.3/hadoop-project-dist/hadoop-common/ClusterSetup.html">https://hadoop.apache.org/docs/r3.1.3/hadoop-project-dist/hadoop-common/ClusterSetup.html</a></p>
+</blockquote>
+<h2 id="节点克隆与免密登录"><a href="#节点克隆与免密登录" class="headerlink" title="节点克隆与免密登录"></a>节点克隆与免密登录</h2><p>将预配置好的机器克隆：机器名为<code>node1</code>, <code>node2</code>, <code>node3</code>，根据VM网络信息配置合适<code>IP</code>地址，比如。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>IP</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>node1</td>
+<td>192.168.179.101</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.179.102</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.179.103</td>
+</tr>
+</tbody></table>
+<h3 id="Hostname修改"><a href="#Hostname修改" class="headerlink" title="Hostname修改"></a>Hostname修改</h3><p>略。</p>
+<h3 id="IP修改"><a href="#IP修改" class="headerlink" title="IP修改"></a>IP修改</h3><p>略。</p>
+<h3 id="配置hosts"><a href="#配置hosts" class="headerlink" title="配置hosts"></a>配置hosts</h3><p><code>/etc/hosts</code> （对三个节点都做如下配置）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</span><br><span class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</span><br><span class="line"></span><br><span class="line">192.168.179.101 node1</span><br><span class="line">192.168.179.102 node2</span><br><span class="line">192.168.179.103 node3</span><br></pre></td></tr></table></figure>
+
+<p>可通过<code>ping</code>命令测试映射文件配置是否正确</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 hadoop]# ping node2</span><br><span class="line">PING node2 (192.168.179.102) 56(84) bytes of data.</span><br><span class="line">64 bytes from node2 (192.168.179.102): icmp_seq=1 ttl=64 time=0.634 ms</span><br></pre></td></tr></table></figure>
+
+<p>修改完，退出<code>root</code>账号，切换到张三用户。</p>
+<h3 id="免密登录"><a href="#免密登录" class="headerlink" title="免密登录"></a>免密登录</h3><table>
+<thead>
+<tr>
+<th></th>
+<th><code>HDFS</code></th>
+<th><code>Yarn</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>node1</td>
+<td><code>DataNode</code>, <code>NameNode</code>, <code>historyserver</code></td>
+<td><code>NodeManager</code></td>
+</tr>
+<tr>
+<td>node2</td>
+<td><code>DataNode</code></td>
+<td><code>NodeManager</code>,<code>ResourceManager</code></td>
+</tr>
+<tr>
+<td>node3</td>
+<td><code>DataNode</code>, <code>SecondaryNameNode</code></td>
+<td><code>NodeManager</code></td>
+</tr>
+</tbody></table>
+<p>说明：这里面只配置了node1、node2到其他主机的无密登录；因为node1配置的是NameNode，node2配置的是ResourceManager，都要求对其他节点无密访问。</p>
+<p>（1）node1上生成公钥和私钥：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 .ssh]$ ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+
+<p>然后敲（三个回车），就会生成两个文件id_rsa（私钥）、id_rsa.pub（公钥）</p>
+<p>（2）将node1公钥拷贝到要免密登录的目标机器上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 .ssh]$ ssh-copy-id node1</span><br><span class="line">[zhangsan@node1 .ssh]$ ssh-copy-id node2</span><br><span class="line">[zhangsan@node1 .ssh]$ ssh-copy-id node3</span><br></pre></td></tr></table></figure>
+
+<p>（3）node2上生成公钥和私钥：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node2 .ssh]$ ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+
+<p>然后敲（三个回车），就会生成两个文件id_rsa（私钥）、id_rsa.pub（公钥）</p>
+<p>（4）将node2公钥拷贝到要免密登录的目标机器上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node2 .ssh]$ ssh-copy-id node1</span><br><span class="line">[zhangsan@node2 .ssh]$ ssh-copy-id node2</span><br><span class="line">[zhangsan@node2 .ssh]$ ssh-copy-id node3</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[SSH免密登录原理]: ..&#x2F;Linux&#x2F;Linux_SSH_Passwordless_login.md	“原理”</p>
+</blockquote>
+<h2 id="集群规划"><a href="#集群规划" class="headerlink" title="集群规划"></a>集群规划</h2><table>
+<thead>
+<tr>
+<th></th>
+<th><code>HDFS</code></th>
+<th><code>Yarn</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>node1</td>
+<td><code>DataNode</code>, <code>NameNode</code>, <code>historyserver</code></td>
+<td><code>NodeManager</code></td>
+</tr>
+<tr>
+<td>node2</td>
+<td><code>DataNode</code></td>
+<td><code>NodeManager</code>,<code>ResourceManager</code></td>
+</tr>
+<tr>
+<td>node3</td>
+<td><code>DataNode</code>, <code>SecondaryNameNode</code></td>
+<td><code>NodeManager</code></td>
+</tr>
+</tbody></table>
+<h2 id="上传Hadoop压缩包并解压"><a href="#上传Hadoop压缩包并解压" class="headerlink" title="上传Hadoop压缩包并解压"></a>上传Hadoop压缩包并解压</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">本文将其解压到此目录；</span><br><span class="line">(base) [zhangsan@node1 hadoop]$ <span class="built_in">pwd</span></span><br><span class="line">/opt/bigdata/hadoop</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建软连接"><a href="#创建软连接" class="headerlink" title="创建软连接"></a>创建软连接</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(base) [zhangsan@node1 hadoop]$ <span class="built_in">ln</span> -s hadoop-3.1.3/ default</span><br><span class="line">(base) [zhangsan@node1 hadoop]$ ll</span><br><span class="line">total 12</span><br><span class="line">lrwxrwxrwx.  1 zhangsan zhangsan   12 Feb 28 12:53 default -&gt; hadoop-3.1.3</span><br><span class="line">drwxr-xr-x. 11 zhangsan zhangsan 4096 Feb 28 15:57 hadoop-3.1.3</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(base) [zhangsan@node1 ~]$ vim ~/.bash_profile </span><br><span class="line"><span class="built_in">export</span> HADOOP_HOME=/opt/bigdata/hadoop/default</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$HADOOP_HOME</span>/bin</span><br></pre></td></tr></table></figure>
+
+<p>source一下配置文件，使环境变量生效。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(base) [zhangsan@node1 ~]$ <span class="built_in">source</span> ~/.bash_profile </span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><h3 id="core-site-xml"><a href="#core-site-xml" class="headerlink" title="core-site.xml"></a>core-site.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 指定NameNode的地址 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://node1:8020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- hadoop2.x 通常使用9000端口 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 指定hadoop数据的存储目录 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>/opt/bigdata/hadoop/default/tmp<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.zhangsan.hosts<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.zhangsan.groups<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="hdfs-site-xml"><a href="#hdfs-site-xml" class="headerlink" title="hdfs-site.xml"></a>hdfs-site.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>3<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.secondary.http-address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>node3:9868<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="mapred-site-xml"><a href="#mapred-site-xml" class="headerlink" title="mapred-site.xml"></a>mapred-site.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span>        </span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 历史服务器端地址 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.jobhistory.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1:10020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 历史服务器web端地址 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.jobhistory.webapp.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1:19888<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="yarn-site-xml"><a href="#yarn-site-xml" class="headerlink" title="yarn-site.xml"></a>yarn-site.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">value</span>&gt;</span>node2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"> <span class="comment">&lt;!-- 开启日志聚集功能 --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.log-aggregation-enable<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"> <span class="comment">&lt;!-- 设置日志聚集服务器地址 --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.log.server.url<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">value</span>&gt;</span>http://node1:19888/jobhistory/logs<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"> <span class="comment">&lt;!-- 设置日志保留时间为7天 --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.log-aggregation.retain-seconds<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">value</span>&gt;</span>604800<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="slaves-workers"><a href="#slaves-workers" class="headerlink" title="slaves&#x2F;workers"></a>slaves&#x2F;workers</h3><p>hadoop 2.x 从进程的配置文件为 slaves</p>
+<p>hadoop 3.x 从进程的配置文件为 workers</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">node1</span><br><span class="line">node2</span><br><span class="line">node3</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>scp</code>命令将修改后的配置文件复制到其他两台机器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ scp -r /opt/bigdata/hadoop/hadoop-2.7.3/etc/hadoop/* zhangsan@node2:/opt/bigdata/hadoop/hadoop-2.7.3/etc/hadoop/</span><br><span class="line"></span><br><span class="line">[zhangsan@node1 ~]$ scp -r /opt/bigdata/hadoop/hadoop-2.7.3/etc/hadoop/* zhangsan@node3:/opt/bigdata/hadoop/hadoop-2.7.3/etc/hadoop/</span><br></pre></td></tr></table></figure>
+
+<h2 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h2><p>这三台机器是由<code>node0</code>克隆出来的，因此会有<code>node0</code>的脏数据。在格式化前，删除三台机器<code>$HADOOP_HOME/tmp</code>目录和<code>$HADOOP_HOME/logs</code>目录中的数据。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在node1格式化namenode</span></span><br><span class="line">[zhangsan@node1 ~]$ hdfs namenode -format</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在node1 上执行 start-all.sh , 启动 HDFS 和 YARN</span></span><br><span class="line">[zhangsan@node1 ~]$ start-all.sh</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动 JobHistoryServer  port: 19888</span></span><br><span class="line">[zhangsan@node1 ~]$ mr-jobhistory-daemon.sh start historyserver</span><br></pre></td></tr></table></figure>
+
+<h2 id="节点进程状态"><a href="#节点进程状态" class="headerlink" title="节点进程状态"></a>节点进程状态</h2><h3 id="node1节点"><a href="#node1节点" class="headerlink" title="node1节点"></a>node1节点</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ jps</span><br><span class="line">14258 NodeManager</span><br><span class="line">14579 Jps</span><br><span class="line">13783 DataNode</span><br><span class="line">13644 NameNode</span><br></pre></td></tr></table></figure>
+
+<h3 id="node2节点"><a href="#node2节点" class="headerlink" title="node2节点"></a>node2节点</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node2 ~]$ jps</span><br><span class="line">4113 ResourceManager</span><br><span class="line">8211 NodeManager</span><br><span class="line">8382 Jps</span><br><span class="line">8095 DataNode</span><br></pre></td></tr></table></figure>
+
+<h3 id="node3节点"><a href="#node3节点" class="headerlink" title="node3节点"></a>node3节点</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node3 ~]$ jps</span><br><span class="line">3955 SecondaryNameNode</span><br><span class="line">7928 DataNode</span><br><span class="line">8044 NodeManager</span><br><span class="line">8220 Jps</span><br></pre></td></tr></table></figure>
+
+<h2 id="Web-UI"><a href="#Web-UI" class="headerlink" title="Web UI"></a>Web UI</h2><h3 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h3><p>​	NameNode:  <a target="_blank" rel="noopener" href="http://node1:50070/">http://node1:50070</a> (hadoop 2.x)</p>
+<p>​	NameNode:  <a target="_blank" rel="noopener" href="http://node1:9870/">http://node1:9870</a>   (hadoop 3.x)</p>
+<h3 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a>YARN</h3><p> <a target="_blank" rel="noopener" href="http://node2:8088/">http://node2:8088</a></p>
+<p><img src="/./img/Hadoop_Environment_Setup_Distributed_Fully/image-20220215001541244.png" alt="image-20220215001541244"></p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><h4 id="文件准备"><a href="#文件准备" class="headerlink" title="文件准备"></a>文件准备</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ hdfs dfs -mkdir /input</span><br><span class="line"></span><br><span class="line">[zhangsan@node1 ~]$ hdfs dfs ls -R /</span><br><span class="line">drwxr-xr-x   - zhangsan supergroup          0 2022-02-15 00:12 /input</span><br><span class="line"></span><br><span class="line">[zhangsan@node1 ~]$ hdfs dfs -put /home/zhangsan/bigdata.txt /input</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./img/Hadoop_Environment_Setup_Distributed_Fully/image-20220215001501193.png" alt="image-20220215001501193"></p>
+<h4 id="WordCount"><a href="#WordCount" class="headerlink" title="WordCount"></a>WordCount</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[zhangsan@node1 ~]$ hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.3.jar wordcount /input/bigdata.txt /out/02161</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./img/Hadoop_Environment_Setup_Distributed_Fully/image-20220216130145863.png" alt="image-20220216130145863"></p>
+<h3 id="集群进程查看脚本"><a href="#集群进程查看脚本" class="headerlink" title="集群进程查看脚本"></a>集群进程查看脚本</h3><p><code>/home/zhangsan/bin/hdp.sh</code>                                                                                                   </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$#</span> -lt 1 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;No Args Input...&quot;</span></span><br><span class="line">    <span class="built_in">exit</span> ;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></span><br><span class="line"><span class="string">&quot;start&quot;</span>)</span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot; =================== 启动 hadoop集群 ===================&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot; --------------- 启动 hdfs ---------------&quot;</span></span><br><span class="line">        ssh node1 <span class="string">&quot;/opt/bigdata/hadoop/default/sbin/start-dfs.sh&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot; --------------- 启动 yarn ---------------&quot;</span></span><br><span class="line">        ssh node2 <span class="string">&quot;/opt/bigdata/hadoop/default/sbin/start-yarn.sh&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot; --------------- 启动 historyserver ---------------&quot;</span></span><br><span class="line">        ssh node1 <span class="string">&quot;/opt/bigdata/hadoop/default/bin/mapred --daemon start historyserver&quot;</span></span><br><span class="line">;;</span><br><span class="line"><span class="string">&quot;stop&quot;</span>)</span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot; =================== 关闭 hadoop集群 ===================&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot; --------------- 关闭 historyserver ---------------&quot;</span></span><br><span class="line">        ssh node1 <span class="string">&quot;/opt/bigdata/hadoop/default/bin/mapred --daemon stop historyserver&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot; --------------- 关闭 yarn ---------------&quot;</span></span><br><span class="line">        ssh node2 <span class="string">&quot;/opt/bigdata/hadoop/default/sbin/stop-yarn.sh&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot; --------------- 关闭 hdfs ---------------&quot;</span></span><br><span class="line">        ssh node1 <span class="string">&quot;/opt/bigdata/hadoop/default/sbin/stop-dfs.sh&quot;</span></span><br><span class="line">;;</span><br><span class="line">*)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Input Args Error...&quot;</span></span><br><span class="line">;;</span><br><span class="line"><span class="keyword">esac</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com">QuZheng</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://www.studybigdata.com/Hadoop/04-Hadoop_Environment_Setup_Distributed_Fully/">https://www.studybigdata.com/Hadoop/04-Hadoop_Environment_Setup_Distributed_Fully/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Hadoop/">Hadoop</a><a class="post-meta__tags" href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">环境搭建</a><a class="post-meta__tags" href="/tags/%E5%AE%8C%E5%85%A8%E5%88%86%E5%B8%83%E5%BC%8F/">完全分布式</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/Hadoop/06-Hadoop_Environment_Setup_Windows_Dev_Env/" title="Hadoop Windows Dev Env"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Hadoop Windows Dev Env</div></div><div class="info-2"><div class="info-item-1">Windows开发环境搭建MavenMaven下载1https://archive.apache.org   直接解压已经提供的压缩包即可  Maven配置MAVEN_HOME&#x2F;conf&#x2F;settings.xml123456789101112&lt;!-- 本地仓库: 根据自己的情况修改保存位置 --&gt;&lt;localRepository&gt;D:\maven-repo&lt;/localRepository&gt; &lt;!-- 远程仓库: aliyun仓库 --&gt;&lt;mirrors&gt;    &lt;mirror&gt;        &lt;id&gt;alimaven&lt;/id&gt;        &lt;name&gt;aliyun maven&lt;/name&gt;        &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;        &lt;mirrorOf&gt;central&lt;/mirrorOf...</div></div></div></a><a class="pagination-related" href="/Hadoop/02-Hadoop_Environment_Setup_SingleNode/" title="Hadoop环境部署-单机"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Hadoop环境部署-单机</div></div><div class="info-2"><div class="info-item-1">单机 官方文档 https://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/SingleCluster.html#Standalone_Operation  安装下载1wget https://archive.apache.org/dist/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz  复制到安装目录1[zhangsan@node0 ~]$ cp hadoop-2.7.3.tar.gz /opt/bigdata/hadoop/  解压12[zhangsan@node0 ~]$ cd /opt/bigdata/hadoop/[zhangsan@node0 hadoop]$ tar -zxf hadoop-2.7.3.tar.gz   创建软连接12345[zhangsan@node0 hadoop]$ ln -s hadoop-2.7.3 default[zhangsan@node0 hadoop]$ lllrwxrwxrwx. 1 zhangsan...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/Hadoop/02-Hadoop_Environment_Setup_SingleNode/" title="Hadoop环境部署-单机"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-15</div><div class="info-item-2">Hadoop环境部署-单机</div></div><div class="info-2"><div class="info-item-1">单机 官方文档 https://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/SingleCluster.html#Standalone_Operation  安装下载1wget https://archive.apache.org/dist/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz  复制到安装目录1[zhangsan@node0 ~]$ cp hadoop-2.7.3.tar.gz /opt/bigdata/hadoop/  解压12[zhangsan@node0 ~]$ cd /opt/bigdata/hadoop/[zhangsan@node0 hadoop]$ tar -zxf hadoop-2.7.3.tar.gz   创建软连接12345[zhangsan@node0 hadoop]$ ln -s hadoop-2.7.3 default[zhangsan@node0 hadoop]$ lllrwxrwxrwx. 1 zhangsan...</div></div></div></a><a class="pagination-related" href="/Hadoop/03-Hadoop_Environment_Setup_Distributed_Pseudo/" title="Hadoop环境部署-伪分布式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-15</div><div class="info-item-2">Hadoop环境部署-伪分布式</div></div><div class="info-2"><div class="info-item-1">伪分布式 官方文档 https://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation  免密登录未配置免密登录通过ssh工具登录node0的时候，会让你输入密码。 12345678[zhangsan@node0 ~]$ ssh node0The authenticity of host &#x27;node0 (192.168.179.100)&#x27; can&#x27;t be established.ECDSA key fingerprint is SHA256:1+3DDeEwkWu0zRO1RoxISbQoKTSgZ56QO3Rl4XXteTw.ECDSA key fingerprint is MD5:92:c9:cd:4a:b8:07:29:ff:3d:25:1c:45:db:8b:5f:dc.Are you sure you want to continue connecting (yes/n...</div></div></div></a><a class="pagination-related" href="/Hadoop/Hadoop_MapReduce_GroupBy/" title="Hadoop GroupBy"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-15</div><div class="info-item-2">Hadoop GroupBy</div></div><div class="info-2"><div class="info-item-1">分组汇总Mapper1234567891011121314151617181920212223242526package cn.studybigdata.hadoop.mapred.bdeptsalary;import org.apache.hadoop.io.IntWritable;import org.apache.hadoop.io.LongWritable;import org.apache.hadoop.io.Text;import org.apache.hadoop.mapreduce.Mapper;import java.io.IOException;public class DeptMapper extends Mapper&lt;LongWritable, Text, IntWritable, IntWritable&gt; &#123;    //7369,SMITH,CLERK,7902,1980/12/17,800,,20    @Override    protected void map(LongWritable key, Text value, Co...</div></div></div></a><a class="pagination-related" href="/Hadoop/Hadoop_MapReduce_Partitioner/" title="Hadoop Partitioner"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-15</div><div class="info-item-2">Hadoop Partitioner</div></div><div class="info-2"><div class="info-item-1">分区计算Employee123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148package cn.studybigdata.hadoop.mapred.dpartition;import org.apache.hadoop.io.Writable;import java.io.DataInput;import java.io.DataOutput;import java....</div></div></div></a><a class="pagination-related" href="/Hadoop/06-Hadoop_Environment_Setup_Windows_Dev_Env/" title="Hadoop Windows Dev Env"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-15</div><div class="info-item-2">Hadoop Windows Dev Env</div></div><div class="info-2"><div class="info-item-1">Windows开发环境搭建MavenMaven下载1https://archive.apache.org   直接解压已经提供的压缩包即可  Maven配置MAVEN_HOME&#x2F;conf&#x2F;settings.xml123456789101112&lt;!-- 本地仓库: 根据自己的情况修改保存位置 --&gt;&lt;localRepository&gt;D:\maven-repo&lt;/localRepository&gt; &lt;!-- 远程仓库: aliyun仓库 --&gt;&lt;mirrors&gt;    &lt;mirror&gt;        &lt;id&gt;alimaven&lt;/id&gt;        &lt;name&gt;aliyun maven&lt;/name&gt;        &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;        &lt;mirrorOf&gt;central&lt;/mirrorOf...</div></div></div></a><a class="pagination-related" href="/Hadoop/Java_Serializable/" title="Hadoop 网络序列化与反序列化实训"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-15</div><div class="info-item-2">Hadoop 网络序列化与反序列化实训</div></div><div class="info-2"><div class="info-item-1"> marp: falseJava序列化与反序列化实训 序列化概述序列化（Serialization）是将对象的状态信息转换为可以存储或传输的形式的过程。 反序列化（Deserialization）则是将已序列化的对象状态信息恢复为对象的过程。 在分布式系统中，序列化机制允许对象通过网络在不同的Java虚拟机之间传输。 在Hadoop生态系统中，序列化尤为重要，因为MapReduce、YARN等组件需要在不同节点之间传输大量数据，高效的序列化机制能够显著提升性能。  Java序列化基础要实现序列化，一个类必须实现java.io.Serializable接口。这个接口是一个标记接口，没有定义任何方法。一旦一个类实现了这个接口，Java虚拟机（JVM）就可以将这个类的对象序列化并通过网络传输。  实训目标 掌握Java对象序列化机制 学习使用Socket进行网络通信 实现客户端与服务器之间的对象传输 理解transient关键字的作用   示例：Student类123456789101112131415161718192021222324252627282930313233343536...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">QuZheng</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">118</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">84</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">26</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E5%85%A8%E5%88%86%E5%B8%83%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">完全分布式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E5%85%8B%E9%9A%86%E4%B8%8E%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95"><span class="toc-number">1.1.</span> <span class="toc-text">节点克隆与免密登录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hostname%E4%BF%AE%E6%94%B9"><span class="toc-number">1.1.1.</span> <span class="toc-text">Hostname修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E4%BF%AE%E6%94%B9"><span class="toc-number">1.1.2.</span> <span class="toc-text">IP修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEhosts"><span class="toc-number">1.1.3.</span> <span class="toc-text">配置hosts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95"><span class="toc-number">1.1.4.</span> <span class="toc-text">免密登录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4%E8%A7%84%E5%88%92"><span class="toc-number">1.2.</span> <span class="toc-text">集群规划</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0Hadoop%E5%8E%8B%E7%BC%A9%E5%8C%85%E5%B9%B6%E8%A7%A3%E5%8E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">上传Hadoop压缩包并解压</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%BD%AF%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.4.</span> <span class="toc-text">创建软连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.5.</span> <span class="toc-text">配置环境变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.6.</span> <span class="toc-text">配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#core-site-xml"><span class="toc-number">1.6.1.</span> <span class="toc-text">core-site.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hdfs-site-xml"><span class="toc-number">1.6.2.</span> <span class="toc-text">hdfs-site.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mapred-site-xml"><span class="toc-number">1.6.3.</span> <span class="toc-text">mapred-site.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#yarn-site-xml"><span class="toc-number">1.6.4.</span> <span class="toc-text">yarn-site.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slaves-workers"><span class="toc-number">1.6.5.</span> <span class="toc-text">slaves&#x2F;workers</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="toc-number">1.7.</span> <span class="toc-text">格式化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8"><span class="toc-number">1.8.</span> <span class="toc-text">启动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="toc-number">1.9.</span> <span class="toc-text">节点进程状态</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#node1%E8%8A%82%E7%82%B9"><span class="toc-number">1.9.1.</span> <span class="toc-text">node1节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#node2%E8%8A%82%E7%82%B9"><span class="toc-number">1.9.2.</span> <span class="toc-text">node2节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#node3%E8%8A%82%E7%82%B9"><span class="toc-number">1.9.3.</span> <span class="toc-text">node3节点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web-UI"><span class="toc-number">1.10.</span> <span class="toc-text">Web UI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HDFS"><span class="toc-number">1.10.1.</span> <span class="toc-text">HDFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#YARN"><span class="toc-number">1.10.2.</span> <span class="toc-text">YARN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95"><span class="toc-number">1.10.3.</span> <span class="toc-text">测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%87%86%E5%A4%87"><span class="toc-number">1.10.3.1.</span> <span class="toc-text">文件准备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WordCount"><span class="toc-number">1.10.3.2.</span> <span class="toc-text">WordCount</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4%E8%BF%9B%E7%A8%8B%E6%9F%A5%E7%9C%8B%E8%84%9A%E6%9C%AC"><span class="toc-number">1.10.4.</span> <span class="toc-text">集群进程查看脚本</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Kafka/" title="Kafka">Kafka</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-02-environment/" title="第2章 数仓基础环境搭建">第2章 数仓基础环境搭建</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/edu-bigdata/chapter-01-introduction/" title="第1章 教育大数据分析项目介绍">第1章 教育大数据分析项目介绍</a><time datetime="2026-03-09T00:00:00.000Z" title="Created 2026-03-09 08:00:00">2026-03-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Linux/Linux_SSH_Passwordless_login/" title="SSH无密登录配置">SSH无密登录配置</a><time datetime="2026-03-08T03:42:26.000Z" title="Created 2026-03-08 11:42:26">2026-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Python/Python/" title="Python">Python</a><time datetime="2023-11-19T13:58:00.000Z" title="Created 2023-11-19 21:58:00">2023-11-19</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By QuZheng</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
